@@ -1,0 +1,57 @@
+1) Primeiro passo:
+
+Instalar o RHEL 7 com minimal install
+
+Registrar a instalação:
+subscription-manager register
+
+Assinar a instalação:
+subscription-manager subscribe
+
+É necessário ter um usuário e senha no site do RedHat
+
+2) Segundo passo:
+
+yum install net-tools -y
+yum install httpd.x86_64 httpd-manual.noarch httpd-tools.x86_64 -y
+yum install git.x86_64 -y
+yum install zip.x86_64 unzip.x86_64 -y
+yum install vim-enhanced.x86_64 -y
+yum install glibc.x86_64 -y
+yum install glibc.i686 nspr -y
+yum install yum-utils.noarch -y
+#yum install nmon -y
+yum install ksh -y
+yum install expect.x86_64 dos2unix.x86_64 -y
+
+
+3) Terceiro passo
+# Instalar Python 3.5
+# 1. Install a package with repository for your system:
+# On CentOS, install package centos-release-scl available in CentOS repository:
+#$ sudo yum install centos-release-scl
+
+# On RHEL, enable RHSCL repository for you system:
+yum-config-manager --enable rhel-server-rhscl-7-rpms
+
+# 2. Install the collection:
+yum install rh-python35
+
+# 3. Start using software collections:
+scl enable rh-python35 bash
+
+
+3) Terceiro passo:
+Instalar o COBOL
+descompactar mfocus64.tgz na raíz
+cd /
+tar -zxvf /caminho_do_arquivo/mfocus64.tgz
+
+4) Quarto passo:
+firewall-cmd --zone=public --add-port=80/tcp --permanent
+firewall-cmd --zone=public --add-port=81/tcp --permanent
+firewall-cmd --zone=public --add-port=82/tcp --permanent
+firewall-cmd --zone=public --add-port=9999/tcp --permanent
+firewall-cmd --reload 
+
+

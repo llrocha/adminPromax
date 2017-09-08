@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+    .col {
+        padding: 8px;
+        border: 2px solid darkgray;
+    }
+    .row {
+        margin-top: 16px;
+    }
+</style>
+<div class="container">
+    <div class="page-header">
+        <h1><span class="label label-primary">Apache</span></h1>
+    </div>
+
+    <div class="row">
+        <div class="col-md-2">
+            {% if 'instancias' in menu %}
+            <a class="btn btn-primary btn-xs btn-block" role="button" href="/apache/instancias">Instâncias</a>
+            {% else %}
+            <a class="btn btn-default btn-xs btn-block" role="button" href="/apache/instancias">Instâncias</a>
+            {% endif %}
+        </div>
+        <div class="col-md-2">
+            {% if 'controle' in menu %}
+            <a class="btn btn-primary btn-xs btn-block" role="button" href="/apache/controle">Controle</a>
+            {% else %}
+            <a class="btn btn-default btn-xs btn-block" role="button" href="/apache/controle">Controle</a>
+            {% endif %}
+        </div>
+        <div class="col-md-2">
+            {% if 'status' in menu %}
+            <a class="btn btn-primary btn-xs btn-block" role="button" href="/apache/status">Status</a>
+            {% else %}
+            <a class="btn btn-default btn-xs btn-block" role="button" href="/apache/status">Status</a>
+            {% endif %}
+        </div>
+        <div class="col-md-2">
+            {% if 'configuracao' in menu %}
+            <a class="btn btn-primary btn-xs btn-block" role="button" href="/apache/configuracao">Configura&ccedil;&atilde;o</a>
+            {% else %}
+            <a class="btn btn-default btn-xs btn-block" role="button" href="/apache/configuracao">Configura&ccedil;&atilde;o</a>
+            {% endif %}
+        </div>
+        <div class="col-md-4">
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+{% block inner_content %}{% endblock %}
+        </div>
+    </div>
+
+</div>
+{% endblock %}

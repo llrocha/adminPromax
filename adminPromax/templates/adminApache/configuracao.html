@@ -1,0 +1,23 @@
+{% extends "adminApache/index.html" %}
+{% block inner_content %}
+<style>
+  pre {
+      margin-top: 16px;
+  }
+</style>
+<h1>Configura&ccedil;&atilde;o</h1>
+<div class="dropdown">
+        <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+          Dropdown
+          <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenu">
+        {% for file in config_files %}
+          <li><a href="/apache/configuracao/{{ file }}">{{ file }}</a></li>
+        {% endfor %}
+        </ul>
+</div>
+<pre>
+{{ file_content }}
+</pre>
+{% endblock %}
