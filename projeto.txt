@@ -1,0 +1,13 @@
+
+Passos da montagem do servidor
+
+1) Subir servidor Linux base com adminPromax rodando
+2) Entrar em http://$SERVER_IP/admin/
+    Usuário padrão: promax
+    Senha padrão: hbsis
+    Observação: Trocar a senha no primeiro acesso
+
+3) Configurar usuário e senha do repositório GIT PROMAX
+4) Escolher o BRANCH que está trabalhando
+5) Solicitar o download do repositório
+6) 
