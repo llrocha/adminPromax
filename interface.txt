@@ -1,0 +1,35 @@
+Módulos
+
+1) Apache
+    a) Instâncias
+    b) Controle
+        i) Start
+        ii) Stop
+    c) Status
+    d) Configuração (visualização)
+
+2) Bases
+    a) Disponíveis
+    b) Selecionar
+
+3) BuildBot
+    a) Selecionar Branch
+    b) Controle
+        i) Start
+        ii) Stop
+    c) Status
+    d) Configuração (visualização)
+
+4) Environ
+    a) Visualização
+    b) Contruir ambiente
+
+5) Git
+    a) Configurar Git
+
+6) Jobs
+    a) Listar
+    b) Configurar
+    c) Executar
+        i) Start
+        ii) Stop
