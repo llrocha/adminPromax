@@ -1,0 +1,8 @@
+GIT_USER=hbbuildbot
+GIT_PASS=teste
+GIT_BRANCH=master
+BB_WORKDIR=/buildbot/gitpoller-workdir
+BB_BUILDERNAME=promax-linux
+BB_WWWIP=90.0.2.174
+BB_WWWPORT=8010
+BB_TITLE=Promax

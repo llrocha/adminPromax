@@ -48,10 +48,21 @@ cd /
 tar -zxvf /caminho_do_arquivo/mfocus64.tgz
 
 4) Quarto passo:
+#Apache
 firewall-cmd --zone=public --add-port=80/tcp --permanent
 firewall-cmd --zone=public --add-port=81/tcp --permanent
 firewall-cmd --zone=public --add-port=82/tcp --permanent
+#BuildBot
+firewall-cmd --zone=public --add-port=8010/tcp --permanent
+firewall-cmd --zone=public --add-port=9989/tcp --permanent
+#serverControls
 firewall-cmd --zone=public --add-port=9999/tcp --permanent
 firewall-cmd --reload 
 
+5) Desabilitar o SELINUX
+https://access.redhat.com/documentation/en-US/Red_Hat_Enterprise_Linux/6/html/Security-Enhanced_Linux/sect-Security-Enhanced_Linux-Enabling_and_Disabling_SELinux-Disabling_SELinux.html
 
+
+6) Configurações do ambiente
+
+export LD_LIBRARY_PATH=/mfocus64/lib:/lib64:/lib:/opt/rh/rh-python35/root/usr/lib64

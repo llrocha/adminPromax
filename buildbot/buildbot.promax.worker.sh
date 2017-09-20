@@ -1,8 +1,11 @@
 #!/usr/bin/sh
 
+export LD_LIBRARY_PATH=/mfocus64/lib:/lib64:/lib:/opt/rh/rh-python35/root/usr/lib64
+export PYTHONPATH=/buildbot/buildbot
 
+PYTHON_EXE=/usr/bin/python3
 WORKER_DIR=/buildbot/bb-worker
-VIRTUAL_DIR=${WORKER_DIR}/sandbox-worker
+VIRTUAL_DIR=${WORKER_DIR}/venv-worker
 
 function Usage
 {
@@ -15,9 +18,12 @@ function Usage
 
 function VirtualEnv
 {
-	virtualenv --no-site-packages sandbox-worker
-	source sandbox-worker/bin/activate
-	pip install 'buildbot-worker'
+	#virtualenv --no-site-packages sandbox-worker
+        ${PYTHON_EXE} -m venv ${VIRTUAL_DIR}
+	source ${VIRTUAL_DIR}/bin/activate
+        pip install --upgrade pip
+	pip install buildbot-worker
+        pip install setuptools-trial
 }
 
 function CreateWorkerBuildBot

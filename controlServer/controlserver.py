@@ -30,15 +30,23 @@ class ControlServerTCPHandler(socketserver.BaseRequestHandler):
             print("Attribute Error({0}): {1}".format(e.errno, e.strerror))
 
         geo = 'h1'
-        if(class_type and method):
-            obj = class_type(geo)
-            method = getattr(obj, method_name)
-            data = method()
-        else:
-            data = 'None'
-        if(type(data) is str):
-            return self.fernet_key.encrypt(data.encode('utf-8'))
-        else:
+        try:
+            if(class_type and method and len(params) > 0):
+                obj = class_type(geo)
+                method = getattr(obj, method_name)
+                data = method(*params)
+            elif(class_type and method):
+                obj = class_type(geo)
+                method = getattr(obj, method_name)
+                data = method()
+            else:
+                data = 'None'
+            if(type(data) is str):
+                return self.fernet_key.encrypt(data.encode('utf-8'))
+            else:
+                return self.fernet_key.encrypt(data)
+        except:
+            data = 'Ocorreu um erro no processamento'.encode('utf-8')
             return self.fernet_key.encrypt(data)
 
     def handle(self):
@@ -49,15 +57,15 @@ class ControlServerTCPHandler(socketserver.BaseRequestHandler):
         request = self.fernet_key.decrypt(self.data)
         request = str(request,'utf-8')
         print('CALL={0}'.format(request))
-        command = request.split('.')
-        #for item in command:
-        #    print(item)
+        command = request.split('->')
         class_name = command[0]
         method_name = command[1]
         print('CALL={0}'.format(class_name))
         print('CALL={0}'.format(method_name))
 
-        data = self.call_method(class_name, method_name)
+        params = command[2:]
+
+        data = self.call_method(class_name, method_name, params)
 
         # just send back the same data, but upper-cased
         self.request.sendall(data)

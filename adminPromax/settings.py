@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'adminBases',
     'adminBuildBot',
     'adminEnviron',
+    'adminGit',
     'adminJobs',
     'django.contrib.admin',
     'django.contrib.auth',

@@ -5,6 +5,21 @@ from django.views import generic
 from django.http import HttpRequest, HttpResponse
 # Create your views here.
 
+def index(request):
+    """Renders the 'index' page."""
+    assert isinstance(request, HttpRequest)
+    return render(
+        request,
+        'adminPromax/index.html',
+        {
+            'menu':'adminPromax',
+            'appname':'adminPromax',
+            'title':'adminPromax/Index',
+            'year':datetime.now().year,
+            'request':request,
+        }
+    )
+
 def contato(request):
     """Renders the 'index' page."""
     assert isinstance(request, HttpRequest)

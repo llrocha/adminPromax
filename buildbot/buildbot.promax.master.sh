@@ -1,8 +1,11 @@
 #!/usr/bin/sh
 
-BUILD_DIR=/buildbot/promax/gitpoller-workdir
+export LD_LIBRARY_PATH=/mfocus64/lib:/lib64:/lib:/opt/rh/rh-python35/root/usr/lib64
+export PYTHONPATH=/buildbot/buildbot
+
+PYTHON_EXE=/usr/bin/python3
 MASTER_DIR=/buildbot/bb-master
-VIRTUAL_DIR=/buildbot/bb-master/sandbox-master
+VIRTUAL_DIR=${MASTER_DIR}/venv-master
 
 function Usage
 {
@@ -19,8 +22,9 @@ function VirtualEnv
 	then
 		rm -f ${VIRTUAL_DIR}
 	fi
-	virtualenv --no-site-packages sandbox-master
-	source sandbox-master/bin/activate
+	#virtualenv --no-site-packages sandbox-master
+        ${PYTHON_EXE} -m venv ${VIRTUAL_DIR}
+	source ${VIRTUAL_DIR}/bin/activate
 	pip install --upgrade pip
 	pip install 'buildbot[bundle]'
 }
@@ -36,7 +40,7 @@ function CreateMasterBuildBot
 	mkdir -p ${MASTER_DIR}
 	cd ${MASTER_DIR}
 	buildbot create-master master
-	cp ../master.cfg master/
+	cp ${PYTHONPATH}/master.cfg master/
 }
 
 function InitMasterBuildBot

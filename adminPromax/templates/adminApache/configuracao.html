@@ -8,7 +8,7 @@
 <h1>Configura&ccedil;&atilde;o</h1>
 <div class="dropdown">
         <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-          Dropdown
+          Arquivo
           <span class="caret"></span>
         </button>
         <ul class="dropdown-menu" aria-labelledby="dropdownMenu">
@@ -17,7 +17,9 @@
         {% endfor %}
         </ul>
 </div>
-<pre>
-{{ file_content }}
-</pre>
+<style>
+  {{ file_css|safe }}
+</style>
+{{ file_content|safe }}
+
 {% endblock %}
