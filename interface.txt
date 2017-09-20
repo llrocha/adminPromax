@@ -8,7 +8,6 @@ Módulos
     c) Status
     d) Configuração (visualização)
     e) Logs (visualização)
-    
 
 2) Bases
     a) Disponíveis
