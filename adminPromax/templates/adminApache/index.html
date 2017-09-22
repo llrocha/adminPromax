@@ -18,33 +18,40 @@
     <div class="row">
         <div class="col-md-2">
             {% if 'instancias' in menu %}
-            <a class="btn btn-primary btn-xs btn-block" role="button" href="/apache/instancias">Instâncias</a>
+            <a class="btn btn-primary btn-xs btn-block" role="button" href="/apache/instancias/">Instâncias</a>
             {% else %}
-            <a class="btn btn-default btn-xs btn-block" role="button" href="/apache/instancias">Instâncias</a>
+            <a class="btn btn-default btn-xs btn-block" role="button" href="/apache/instancias/">Instâncias</a>
             {% endif %}
         </div>
         <div class="col-md-2">
             {% if 'controle' in menu %}
-            <a class="btn btn-primary btn-xs btn-block" role="button" href="/apache/controle">Controle</a>
+            <a class="btn btn-primary btn-xs btn-block" role="button" href="/apache/controle/">Controle</a>
             {% else %}
-            <a class="btn btn-default btn-xs btn-block" role="button" href="/apache/controle">Controle</a>
+            <a class="btn btn-default btn-xs btn-block" role="button" href="/apache/controle/">Controle</a>
             {% endif %}
         </div>
         <div class="col-md-2">
             {% if 'status' in menu %}
-            <a class="btn btn-primary btn-xs btn-block" role="button" href="/apache/status">Status</a>
+            <a class="btn btn-primary btn-xs btn-block" role="button" href="/apache/status/">Status</a>
             {% else %}
-            <a class="btn btn-default btn-xs btn-block" role="button" href="/apache/status">Status</a>
+            <a class="btn btn-default btn-xs btn-block" role="button" href="/apache/status/">Status</a>
             {% endif %}
         </div>
         <div class="col-md-2">
             {% if 'configuracao' in menu %}
-            <a class="btn btn-primary btn-xs btn-block" role="button" href="/apache/configuracao">Configura&ccedil;&atilde;o</a>
+            <a class="btn btn-primary btn-xs btn-block" role="button" href="/apache/configuracao/">Configura&ccedil;&atilde;o</a>
             {% else %}
-            <a class="btn btn-default btn-xs btn-block" role="button" href="/apache/configuracao">Configura&ccedil;&atilde;o</a>
+            <a class="btn btn-default btn-xs btn-block" role="button" href="/apache/configuracao/">Configura&ccedil;&atilde;o</a>
             {% endif %}
         </div>
-        <div class="col-md-4">
+        <div class="col-md-2">
+            {% if 'logs' in menu %}
+            <a class="btn btn-primary btn-xs btn-block" role="button" href="/apache/logs/">Logs</a>
+            {% else %}
+            <a class="btn btn-default btn-xs btn-block" role="button" href="/apache/logs/">Logs</a>
+            {% endif %}
+        </div>
+        <div class="col-md-2">
         </div>
     </div>
 

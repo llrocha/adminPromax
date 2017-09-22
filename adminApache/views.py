@@ -76,6 +76,36 @@ def configuracao(request, file = ''):
         }
     )
 
+def logs(request, file = ''):
+    """Renders the 'configuracao' page."""
+    assert isinstance(request, HttpRequest)
+
+    config_files = ExecuteRemoteCommand('90.0.2.174', 9999, 'ApacheControls->log_files')
+    config_files = config_files.split(';')
+    config_files.reverse()
+    if(file):
+        file_content = ExecuteRemoteCommand('90.0.2.174', 9999, 'ApacheControls->logfile_content->' + file)
+        #file_content = highlight(file_content, ApacheConfLexer(), HtmlFormatter())
+        #file_css = HtmlFormatter().get_style_defs('.highlight')
+    else:
+        file_content = ''
+        file_css = ''
+
+    return render(
+        request,
+        'adminApache/logs.html',
+        {
+            'menu':'adminApache/logs',
+            'appname':'adminPromax',
+            'title':'adminApache/Index',
+            'year':datetime.now().year,
+            'request':request,
+            'config_files': config_files,
+            'file_content': file_content,
+            #'file_css': file_css,
+        }
+    )
+
 def controle(request, command = ''):
     """Renders the 'controle' page."""
     assert isinstance(request, HttpRequest)

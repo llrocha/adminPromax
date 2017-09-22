@@ -1,4 +1,4 @@
-{% extends "adminApache/index.html" %}
+{% extends "adminBuildBot/index.html" %}
 {% block inner_content %}
 <style>
   pre {
@@ -13,7 +13,7 @@
         </button>
         <ul class="dropdown-menu" aria-labelledby="dropdownMenu">
         {% for file in config_files %}
-          <li><a href="/apache/configuracao/{{ file }}/">{{ file }}</a></li>
+          <li><a href="/buildbot/configuracao/{{ file }}">{{ file }}</a></li>
         {% endfor %}
         </ul>
 </div>

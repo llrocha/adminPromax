@@ -5,7 +5,7 @@
       margin-top: 16px;
   }
 </style>
-<h1>Configura&ccedil;&atilde;o</h1>
+<h1>Logs</h1>
 <div class="dropdown">
         <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
           Arquivo
@@ -13,13 +13,12 @@
         </button>
         <ul class="dropdown-menu" aria-labelledby="dropdownMenu">
         {% for file in config_files %}
-          <li><a href="/apache/configuracao/{{ file }}/">{{ file }}</a></li>
+          <li><a href="/apache/logs/{{ file }}/">{{ file }}</a></li>
         {% endfor %}
         </ul>
 </div>
-<style>
-  {{ file_css|safe }}
-</style>
-{{ file_content|safe }}
+<pre>
+{{ file_content }}
+</pre>
 
 {% endblock %}

@@ -39,11 +39,32 @@ class ApacheControls(BaseControls):
         return files
 
     def configfile_content(self, file):
-        config_file = '/{0}/etc/apache/promax/{1}'.format(self.geo, file.replace('_', '.'))
+        config_file = '/{0}/etc/apache/promax/{1}'.format(self.geo, file.replace('%', '.'))
         if(os.path.isfile(config_file)):
             return subprocess.check_output(['cat', config_file])
         else:
             return 'This file does not exists! [{0}]'.format(config_file)
+
+    def log_files(self):
+        files = ''
+        try:
+            dir = '/{0}/promax/log/httpd/'.format(self.geo)
+            for log_file in os.listdir(dir):
+                if(files):
+                    files = files + ';' + log_file
+                else:
+                    files = log_file
+        except FileNotFoundError as e:
+            files = "File Not Found Error ({0}): {1}".format(e.errno, e.strerror)
+
+        return files
+
+    def logfile_content(self, file):
+        log_file = '/{0}/promax/log/httpd/{1}'.format(self.geo, file.replace('%', '.'))
+        if(os.path.isfile(log_file)):
+            return subprocess.check_output(['cat', log_file])
+        else:
+            return 'This file does not exists! [{0}]'.format(log_file)
 
     def instances(self):
         geo = None
@@ -66,6 +87,79 @@ class DataBaseControls(BaseControls):
 class BuildBotControls(BaseControls):
     def __init__(self, geo):
         super(self.__class__, self).__init__(geo)
+
+    def status(self):
+        return str(sh.grep(sh.ps('-ef'), 'buildbot'))
+
+    def startmaster(self):
+        return subprocess.check_output(['/buildbot/buildbot/buildbot.promax.master.sh', '-s'])
+
+    def startworker(self):
+        return subprocess.check_output(['/buildbot/buildbot/buildbot.promax.worker.sh', '-s'])        
+
+    def stopmaster(self):
+        return subprocess.check_output(['/buildbot/buildbot/buildbot.promax.master.sh', '-k'])
+
+    def stopworker(self):
+        return subprocess.check_output(['/buildbot/buildbot/buildbot.promax.worker.sh', '-k'])
+
+    def config_files(self):
+        mask = '.*\.cfg'
+        files = ''
+        try:
+            dir = '/buildbot/buildbot/'.format(self.geo)
+            for config_file in os.listdir(dir):
+                if(re.match(mask, config_file)):
+                    if(files):
+                        files = files + ';' + config_file
+                    else:
+                        files = config_file
+        except FileNotFoundError as e:
+            files = "File Not Found Error ({0}): {1}".format(e.errno, e.strerror)
+
+        return files
+
+    def configfile_content(self, file):
+        config_file = '/buildbot/buildbot/{0}'.format(file.replace('%', '.'))
+        if(os.path.isfile(config_file)):
+            return subprocess.check_output(['cat', config_file])
+        else:
+            return 'This file does not exists! [{0}]'.format(config_file)
+
+    def log_files(self, instance='master'):
+        mask = '.*\.log'
+        files = ''
+        try:
+            dir = '/buildbot/bb-{0}/{0}/'.format(instance)
+            for log_file in os.listdir(dir):
+                if(re.match(mask, log_file)):
+                    if(files):
+                        files = files + ';' + log_file
+                    else:
+                        files = log_file
+        except FileNotFoundError as e:
+            files = "File Not Found Error ({0}): {1}".format(e.errno, e.strerror)
+
+        return files
+
+    def logfile_content(self, instance='master', file='twistd.log'):
+        log_file = '/buildbot/bb-{0}/{0}/{1}'.format(instance, file.replace('%', '.'))
+        if(os.path.isfile(log_file)):
+            return subprocess.check_output(['cat', log_file])
+        else:
+            return 'This file does not exists! [{0}]'.format(log_file)
+
+    def instances(self):
+        geo = None
+
+        for dir in os.listdir('/'):
+            if(re.match('^[a-z][a-z0-9]$', dir)):
+                if(geo):
+                    geo = geo + ';' + dir
+                else:
+                    geo = dir
+
+        return geo
 
 
 class EnvironControls(BaseControls):
