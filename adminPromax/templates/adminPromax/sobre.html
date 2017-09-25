@@ -5,7 +5,6 @@
         <h1><span class="label label-primary">Sobre</span></h1>
     </div>
 
-
     <span class="label label-default">Default</span>
     <span class="label label-primary">Primary</span>
     <span class="label label-success">Success</span>
@@ -13,5 +12,13 @@
     <span class="label label-warning">Warning</span>
     <span class="label label-danger">Danger</span>
     <span class="label label-primary">Primary</span>
+    
+    <hr>
+
+    <pre>
+    {% for k, v in request.META.items %}
+    {{k}}={{v}}
+    {% endfor %}
+    </pre>
 </div>
 {% endblock %}

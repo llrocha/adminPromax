@@ -34,7 +34,7 @@ def instancias(request):
     instancias = instancias.split(';')
     return render(
         request,
-        'adminApache/instancias.html',
+        'adminBuildBot/instancias.html',
         {
             'menu':'adminBuildBot/instancias',
             'appname':'adminPromax',
@@ -75,20 +75,33 @@ def configuracao(request, file = ''):
         }
     )
 
-def logs(request, file = ''):
+def logs(request, instance = '', file = ''):
     """Renders the 'configuracao' page."""
     assert isinstance(request, HttpRequest)
 
-    config_files = ExecuteRemoteCommand('90.0.2.174', 9999, 'BuildBotControls->log_files')
-    config_files = config_files.split(';')
-    config_files.reverse()
+
     if(file):
-        file_content = ExecuteRemoteCommand('90.0.2.174', 9999, 'BuildBotControls->logfile_content->master->' + file)
-        #file_content = highlight(file_content, ApacheConfLexer(), HtmlFormatter())
-        #file_css = HtmlFormatter().get_style_defs('.highlight')
+        file_content = ExecuteRemoteCommand('90.0.2.174', 9999, 'BuildBotControls->logfile_content->' + instance + '->' + file)
     else:
         file_content = ''
         file_css = ''
+
+    if(instance):
+        config_files = ExecuteRemoteCommand('90.0.2.174', 9999, 'BuildBotControls->log_files->' + instance)
+        config_files = config_files.split(';')
+    else:
+        config_files = ''
+        instance = 'worker'
+
+    if(instance == 'master'):
+        master = 'active'
+        worker = ''
+    elif(instance == 'worker'):
+        master = ''
+        worker = 'active'
+    else:
+        master = ''
+        worker = 'active'
 
     return render(
         request,
@@ -101,7 +114,9 @@ def logs(request, file = ''):
             'request':request,
             'config_files': config_files,
             'file_content': file_content,
-            #'file_css': file_css,
+            'instance': instance,
+            'master': master,
+            'worker': worker,
         }
     )
 
@@ -114,9 +129,9 @@ def controle(request, command = ''):
         request,
         'adminBuildBot/controle.html',
         {
-            'menu':'adminApache/controle',
+            'menu':'adminBuildBot/controle',
             'appname':'adminPromax',
-            'title':'adminApache/Index',
+            'title':'adminBuildBot/Controle',
             'year':datetime.now().year,
             'request':request,
         }

@@ -4,13 +4,14 @@ from . import views
 
 app_name = 'adminBuildBot'
 urlpatterns = [
-    url(r'logs/(?P<file>.*)/$', views.logs, name='logs'),
-    url(r'logs/$', views.logs, name='logs'),
-    url(r'instancias/$', views.instancias, name='instancias'),
     url(r'configuracao/(?P<file>.*)/$', views.configuracao, name='configuracao'),
     url(r'configuracao/$', views.configuracao, name='configuracao'),
     url(r'controle/(?P<command>.*)/$', views.controle, name='controle'),
     url(r'controle/$', views.controle, name='controle'),
+    url(r'instancias/$', views.instancias, name='instancias'),
+    url(r'logs/(?P<instance>.*)/(?P<file>.*)/$', views.logs, name='logs'),
+    url(r'logs/(?P<instance>.*)/$', views.logs, name='logs'),
+    url(r'logs/$', views.logs, name='logs'),
     url(r'status/$', views.status, name='status'),
     url(r'', views.index, name='index'),
     #url(r'^$', views.index, name='index'),

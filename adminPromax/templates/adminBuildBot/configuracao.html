@@ -6,17 +6,55 @@
   }
 </style>
 <h1>Configura&ccedil;&atilde;o</h1>
-<div class="dropdown">
-        <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-          Arquivo
-          <span class="caret"></span>
-        </button>
-        <ul class="dropdown-menu" aria-labelledby="dropdownMenu">
-        {% for file in config_files %}
-          <li><a href="/buildbot/configuracao/{{ file }}">{{ file }}</a></li>
-        {% endfor %}
-        </ul>
+<!--
+<a href="start" class="btn btn-labeled btn-success" role="button">
+  <span class="btn-label"><i class="glyphicon glyphicon-ok"></i></span>
+  Start
+</a>
+<a href="stop" class="btn btn-labeled btn-danger" role="button">
+  <span class="btn-label"><i class="glyphicon glyphicon-remove"></i></span>
+  Stop
+</a>
+
+<div class="row">
+  <div class="col-md-2">
+      {% if 'instancias' in menu %}
+      <a class="btn btn-primary btn-block" role="button" href="/buildbot/configuracao/master/">Master</a>
+      {% else %}
+      <a class="btn btn-default btn-block" role="button" href="/buildbot/configuracao/master/">Master</a>
+      {% endif %}
+  </div>
+  <div class="col-md-2">
+      {% if 'controle' in menu %}
+      <a class="btn btn-primary btn-block" role="button" href="/buildbot/configuracao/worker/">Worker</a>
+      {% else %}
+      <a class="btn btn-default btn-block" role="button" href="/buildbot/configuracao/worker/">Worker</a>
+      {% endif %}
+  </div>
+  <div class="col-md-8">
+  </div>
 </div>
+
+
+<ul class="nav nav-tabs">
+  <li role="presentation" class="{{master}}"><a href="/buildbot/configuracao/master/">Master</a></li>
+  <li role="presentation" class="{{worker}}"><a href="/buildbot/configuracao/worker/">Worker</a></li>
+</ul>
+
+<br>
+-->
+<div class="dropdown">
+  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+    Arquivo
+    <span class="caret"></span>
+  </button>
+  <ul class="dropdown-menu" aria-labelledby="dropdownMenu">
+  {% for file in config_files %}
+    <li><a href="/buildbot/configuracao/{{ file }}/">{{ file }}</a></li>
+  {% endfor %}
+  </ul>
+</div>
+
 <style>
   {{ file_css|safe }}
 </style>
