@@ -73,6 +73,7 @@ def configuracao(request, file = ''):
             'config_files': config_files,
             'file_content': file_content,
             'file_css': file_css,
+            'config_file': file,
         }
     )
 

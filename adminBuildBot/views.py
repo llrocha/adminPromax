@@ -16,9 +16,9 @@ def index(request):
     assert isinstance(request, HttpRequest)
     return render(
         request,
-        'adminBuildBot/index.html',
+        'adminBuildBot/buildbot.html',
         {
-            'menu':'adminBuildBot',
+            'menu':'adminBuildBot/index',
             'appname':'adminPromax',
             'title':'adminBuildBot/Index',
             'year':datetime.now().year,

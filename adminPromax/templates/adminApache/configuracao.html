@@ -6,16 +6,27 @@
   }
 </style>
 <h1>Configura&ccedil;&atilde;o</h1>
-<div class="dropdown">
-        <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-          Arquivo
-          <span class="caret"></span>
-        </button>
-        <ul class="dropdown-menu" aria-labelledby="dropdownMenu">
-        {% for file in config_files %}
-          <li><a href="/apache/configuracao/{{ file }}/">{{ file }}</a></li>
-        {% endfor %}
-        </ul>
+<div class="row">
+  <div class="col-md-2">
+    <div class="dropdown">
+      <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+        Arquivo
+        <span class="caret"></span>
+      </button>
+      <ul class="dropdown-menu" aria-labelledby="dropdownMenu">
+      {% for file in config_files %}
+      {% ifequal file config_file %}
+        <li class="active"><a href="/apache/configuracao/{{ file }}/">{{ file }}</a></li>
+      {%else%}
+        <li><a href="/apache/configuracao/{{ file }}/">{{ file }}</a></li>
+      {%endifequal%}
+      {% endfor %}
+      </ul>
+    </div>
+  </div>
+  <div class="col-md-10">
+    <input id="config_file" name="config_file" value="{{config_file}}" type="text" class="form-control" aria-label="..." readonly>
+  </div>
 </div>
 <style>
   {{ file_css|safe }}

@@ -2,6 +2,7 @@ import os
 import re
 import sh
 import subprocess
+from buildbot import GitInfo, BuildBotInfo
 
 
 class BaseControls():
@@ -160,6 +161,12 @@ class BuildBotControls(BaseControls):
                     geo = dir
 
         return geo
+
+    def list_branches(self):
+        dir = '/buildbot/gitpoller-workdir/2A/'
+        os.chdir(dir)
+        result = str(sh.git('branch', '-r'))
+        return result.replace('\n', ';').replace(' ', '')
 
 
 class EnvironControls(BaseControls):

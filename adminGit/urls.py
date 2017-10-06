@@ -4,6 +4,8 @@ from . import views
 
 app_name = 'adminGit'
 urlpatterns = [
+    url(r'configuracao/$', views.configuracao, name='configuracao'),
+    url(r'branch/(?P<branch>.*)', views.configuracao, name='configuracao'),
     url(r'', views.index, name='index'),
     #url(r'^$', views.IndexView.as_view(), name='index'),
     #url(r'^(?P<pk>[0-9]+)/$', views.DetailView.as_view(), name='detail'),
