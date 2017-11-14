@@ -1,0 +1,20 @@
+{% extends "adminBuildBot/index.html" %}
+{% block inner_content %}
+
+<style>
+    .btn-label {position: relative;left: -12px;display: inline-block;padding: 6px 12px;background: rgba(0,0,0,0.15);border-radius: 3px 0 0 3px;}
+    .btn-labeled {padding-top: 0;padding-bottom: 0;}
+    .btn { margin-bottom:10px; }
+</style>
+<h1>Controle</h1>
+
+<a href="start" class="btn btn-labeled btn-success" role="button">
+    <span class="btn-label"><i class="glyphicon glyphicon-ok"></i></span>
+    Start
+</a>
+<a href="stop" class="btn btn-labeled btn-danger" role="button">
+    <span class="btn-label"><i class="glyphicon glyphicon-remove"></i></span>
+    Stop
+</a>
+
+{% endblock %}

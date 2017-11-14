@@ -1,7 +1,69 @@
 {% extends "base.html" %}
 {% block content %}
+
+<style>
+    .col {
+        padding: 8px;
+        border: 2px solid darkgray;
+    }
+    .row {
+        margin-top: 16px;
+    }
+</style>
 <div class="container">
-<h1>adminBuildBot!</h1>
-<hr>
+    <h1>BuildBot</h1>
+    <hr>
+
+    <div class="row">
+        <div class="col-md-2">
+            {% if 'instancias' in menu %}
+            <a class="btn btn-primary btn-xs btn-block" role="button" href="/buildbot/instancias/">Instâncias</a>
+            {% else %}
+            <a class="btn btn-default btn-xs btn-block" role="button" href="/buildbot/instancias/">Instâncias</a>
+            {% endif %}
+        </div>
+        <div class="col-md-2">
+            {% if 'controle' in menu %}
+            <a class="btn btn-primary btn-xs btn-block" role="button" href="/buildbot/controle/">Controle</a>
+            {% else %}
+            <a class="btn btn-default btn-xs btn-block" role="button" href="/buildbot/controle/">Controle</a>
+            {% endif %}
+        </div>
+        <div class="col-md-2">
+            {% if 'status' in menu %}
+            <a class="btn btn-primary btn-xs btn-block" role="button" href="/buildbot/status/">Status</a>
+            {% else %}
+            <a class="btn btn-default btn-xs btn-block" role="button" href="/buildbot/status/">Status</a>
+            {% endif %}
+        </div>
+        <div class="col-md-2">
+            {% if 'configuracao' in menu %}
+            <a class="btn btn-primary btn-xs btn-block" role="button" href="/buildbot/configuracao/">Configura&ccedil;&atilde;o</a>
+            {% else %}
+            <a class="btn btn-default btn-xs btn-block" role="button" href="/buildbot/configuracao/">Configura&ccedil;&atilde;o</a>
+            {% endif %}
+        </div>
+        <div class="col-md-2">
+            {% if 'logs' in menu %}
+            <a class="btn btn-primary btn-xs btn-block" role="button" href="/buildbot/logs/">Logs</a>
+            {% else %}
+            <a class="btn btn-default btn-xs btn-block" role="button" href="/buildbot/logs/">Logs</a>
+            {% endif %}
+        </div>
+        <div class="col-md-2">
+            {% if 'index' in menu %}
+            <a class="btn btn-primary btn-xs btn-block" role="button" href="/buildbot/">BuildBot</a>
+            {% else %}
+            <a class="btn btn-default btn-xs btn-block" role="button" href="/buildbot/">BuildBot</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+{% block inner_content %}{% endblock %}
+        </div>
+    </div>
+
 </div>
 {% endblock %}
