@@ -2,7 +2,7 @@ import os
 import re
 import sh
 import subprocess
-from buildbot import GitInfo, BuildBotInfo
+from buildbot.config import GitInfo, BuildBotInfo
 
 
 class BaseControls():
@@ -15,7 +15,14 @@ class ApacheControls(BaseControls):
         super(self.__class__, self).__init__(geo)
 
     def status(self):
-        return str(sh.grep(sh.ps('-ef'), 'httpd'))
+        r = ''
+        ps = sh.ps('-ef')
+        for item in ps.split('\n'):
+            if(re.search('httpd', item)):
+                r += (item + '\n')
+        if(len(r) == 0):
+            r = 'Apache está inativo!'
+        return r
 
     def start(self):
         return subprocess.check_output(['/amb/boot/S80_httpd_promax_h1'])
@@ -169,31 +176,36 @@ class BuildBotControls(BaseControls):
         return result.replace('\n', ';').replace(' ', '')
 
 
+
 class EnvironControls(BaseControls):
     def __init__(self, geo):
         super(self.__class__, self).__init__(geo)
 
-    def environ():
+    def environ(self):
         return subprocess.check_output(['set'])
 
-    def diskusage():
+    def diskusage(self):
         return subprocess.check_output(['df', '-h'])
 
-    def memory():
+    def memory(self):
         return subprocess.check_output(['egrep', '"Mem|Cache|Swap"', '/proc/meminfo'])
+
+    def environment_tree(self):
+        root = '/' + self.geo
+        return subprocess.check_output(['find', root, '-type', 'd'])
 
 
 class JobsControls(BaseControls):
     def __init__(self, geo):
         super(self.__class__, self).__init__(geo)
 
-    def startjob(job):
+    def startjob(self, job):
         pass
 
-    def stopjob(job):
+    def stopjob(self, job):
         pass
 
-    def jobs(job):
+    def jobs(self, job):
         pass
 
 
@@ -205,9 +217,9 @@ class ServerControls():
         super(self.__class__, self).__init__(geo)
         self.modules = []
 
-    def register_class(cls):
+    def register_class(self, cls):
         self.modules.append(cls)
 
-    def unregister_class(cls):
+    def unregister_class(self, cls):
         self.modules.remove(cls)
 
