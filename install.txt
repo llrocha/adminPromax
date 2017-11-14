@@ -2,7 +2,13 @@
 Python version
 Python 3.5.1 or later
 
+pip install virtualenv
+
+python -m virtualenv pythonXXX (XXX = python version)
+
 Python packages
+
+command: pip install -r requirements.txt
 
 Package      Version
 ------------ -------
