@@ -121,6 +121,7 @@ def controle(request, command = ''):
             'title':'adminApache/Index',
             'year':datetime.now().year,
             'request':request,
+            'command': command
         }
     )
 
