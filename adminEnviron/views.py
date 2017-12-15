@@ -5,6 +5,9 @@ from django.views import generic
 from django.http import HttpRequest, HttpResponse
 
 from controlServer.controlclient import ExecuteRemoteCommand
+import urllib.request
+import re
+import os
 
 # Create your views here.
 
@@ -66,13 +69,199 @@ def show_tree(request):
 
     return render(
         request,
-        'adminEnviron/index.html',
+        'adminEnviron/treeview.html',
         {
-            'menu':'adminEnviron',
+            'menu':'adminEnviron/construcao',
             'appname':'adminPromax',
             'title':'adminEnviron/Index',
             'year':datetime.now().year,
             'request':request,
             'html_tree': html_tree
+        }
+    )
+
+
+def webdav(request, dir = ''):
+    icons = {
+        '*': ['default.png', '[   ]'],
+        '7z': ['archive.png', '[   ]'],
+        'URL': ['html.png', '[TXT]'],
+        'aac': ['audio.png', '[SND]'],
+        'ai': ['eps.png', '[   ]'],
+        'aif': ['audio.png', '[SND]'],
+        'aifc': ['audio.png', '[SND]'],
+        'aiff': ['audio.png', '[SND]'],
+        'ape': ['audio.png', '[SND]'],
+        'asf': ['video.png', '[VID]'],
+        'asx': ['video.png', '[VID]'],
+        'au': ['audio.png', '[SND]'],
+        'avi': ['video.png', '[VID]'],
+        'bat': ['script.png', '[TXT]'],
+        'bin': ['bin.png', '[HEX]'],
+        'bmp': ['bmp.png', '[IMG]'],
+        'bz2': ['archive.png', '[HEX]'],
+        'c': ['c.png', '[TXT]'],
+        'cab': ['archive.png', '[   ]'],
+        'cmd': ['script.png', '[TXT]'],
+        'cpp': ['cpp.png', '[TXT]'],
+        'css': ['css.png', '[TXT]'],
+        'csv': ['calc.png', '[TXT]'],
+        'deb': ['deb.png', '[PKG]'],
+        'dmg': ['package.png', '[PKG]'],
+        'doc': ['doc.png', '[DOC]'],
+        'docm': ['doc.png', '[DOC]'],
+        'docx': ['doc.png', '[DOC]'],
+        'dot': ['doc.png', '[DOC]'],
+        'dotm': ['doc.png', '[DOC]'],
+        'dotx': ['doc.png', '[DOC]'],
+        'eps': ['eps.png', '[   ]'],
+        'exe': ['exe.png', '[HEX]'],
+        'f4a': ['audio.png', '[SND]'],
+        'f4b': ['audio.png', '[SND]'],
+        'f4p': ['video.png', '[VID]'],
+        'f4v': ['video.png', '[VID]'],
+        'flac': ['audio.png', '[SND]'],
+        'flv': ['video.png', '[VID]'],
+        'gif': ['gif.png', '[IMG]'],
+        'gz': ['archive.png', '[   ]'],
+        'h': ['h.png', '[TXT]'],
+        'hex': ['bin.png', '[HEX]'],
+        'htm': ['html.png', '[TXT]'],
+        'html': ['html.png', '[TXT]'],
+        'ico': ['ico.png', '[IMG]'],
+        'iff': ['audio.png', '[SND]'],
+        'iso': ['cd.png', '[   ]'],
+        'it': ['audio.png', '[SND]'],
+        'jar': ['java.png', '[TXT]'],
+        'jpe': ['jpg.png', '[IMG]'],
+        'jpeg': ['jpg.png', '[IMG]'],
+        'jpg': ['jpg.png', '[IMG]'],
+        'js': ['js.png', '[TXT]'],
+        'json': ['js.png', '[TXT]'],
+        'log': ['doc.png', '[TXT]'],
+        'm3u': ['playlist.png', '[   ]'],
+        'm3u8': ['playlist.png', '[   ]'],
+        'm4a': ['audio.png', '[SND]'],
+        'm4v': ['video.png', '[VID]'],
+        'md': ['markdown.png', '[   ]'],
+        'mid': ['audio.png', '[SND]'],
+        'mkv': ['video.png', '[VID]'],
+        'mod': ['audio.png', '[SND]'],
+        'mov': ['video.png', '[VID]'],
+        'mp3': ['audio.png', '[SND]'],
+        'mp4': ['video.png', '[VID]'],
+        'mpa': ['audio.png', '[SND]'],
+        'mpg': ['video.png', '[VID]'],
+        'msg': ['doc.png', '[DOC]'],
+        'nfo': ['text.png', '[TXT]'],
+        'odt': ['doc.png', '[DOC]'],
+        'oga': ['audio.png', '[SND]'],
+        'ogg': ['audio.png', '[SND]'],
+        'ogv': ['video.png', '[VID]'],
+        'pages': ['doc.png', '[DOC]'],
+        'pdf': ['pdf.png', '[   ]'],
+        'php': ['php.png', '[TXT]'],
+        'phtml': ['php.png', '[TXT]'],
+        'pkg': ['package.png', '[PKG]'],
+        'pls': ['playlist.png', '[   ]'],
+        'pls8': ['playlist.png', '[   ]'],
+        'png': ['png.png', '[IMG]'],
+        'ps': ['ps.png', '[   ]'],
+        'psd': ['psd.png', '[   ]'],
+        'py': ['py.png', '[TXT]'],
+        'ra': ['audio.png', '[SND]'],
+        'rar': ['rar.png', '[   ]'],
+        'rb': ['rb.png', '[TXT]'],
+        'rm': ['video.png', '[VID]'],
+        'rpm': ['rpm.png', '[PKG]'],
+        'rss': ['rss.png', '[TXT]'],
+        'rtf': ['doc.png', '[DOC]'],
+        's3m': ['audio.png', '[SND]'],
+        'sass': ['css.png', '[TXT]'],
+        'scss': ['css.png', '[TXT]'],
+        'sh': ['script.png', '[TXT]'],
+        'shtml': ['html.png', '[TXT]'],
+        'sql': ['sql.png', '[TXT]'],
+        'srt': ['video.png', '[VID]'],
+        'svg': ['draw.png', '[   ]'],
+        'svgz': ['draw.png', '[   ]'],
+        'swf': ['video.png', '[VID]'],
+        'tar': ['archive.png', '[   ]'],
+        'tex': ['doc.png', '[DOC]'],
+        'tif': ['tiff.png', '[IMG]'],
+        'tiff': ['tiff.png', '[IMG]'],
+        'txt': ['text.png', '[TXT]'],
+        'url': ['html.png', '[TXT]'],
+        'vob': ['video.png', '[VID]'],
+        'wav': ['audio.png', '[SND]'],
+        'wma': ['audio.png', '[SND]'],
+        'wmv': ['video.png', '[VID]'],
+        'wpd': ['doc.png', '[DOC]'],
+        'wps': ['doc.png', '[DOC]'],
+        'xhtml': ['html.png', '[TXT]'],
+        'xlam': ['calc.png', '[   ]'],
+        'xlr': ['calc.png', '[   ]'],
+        'xls': ['calc.png', '[   ]'],
+        'xlsm': ['calc.png', '[   ]'],
+        'xlsx': ['calc.png', '[   ]'],
+        'xltm': ['calc.png', '[   ]'],
+        'xltx': ['calc.png', '[   ]'],
+        'xm': ['audio.png', '[SND]'],
+        'xml': ['xml.png', '[TXT]'],
+        'zip': ['zip.png', '[ZIP]']
+    }
+    """Renders the 'index' page."""
+    
+    assert isinstance(request, HttpRequest)
+
+    if(dir.find('/h1/') < 0):
+        dir = '/h1/' + dir
+
+    if(dir.find('->') > 0):
+        dir = dir.split()[0]
+
+    result = ExecuteRemoteCommand('90.0.2.174', 9999, 'EnvironControls->list_dir->' + dir)
+    result = result.split('\n')
+    files = []
+    for line in result:
+        if(len(line) > 0):
+            l = line.split()
+            d = {}
+            d['icon'] = icons['*'][0]
+            d['alt'] = icons['*'][1]            
+            if(len(l) >= 8):
+                i = l[8].split('.')
+                if(l[0][0] == 'd'):
+                    d['icon'] = 'folder.png'
+                    d['alt'] = '[DIR]'
+                else:
+                    if(len(i) > 1):
+                        if(i[1] in icons.keys()):
+                            d['icon'] = icons[i[1]][0]
+                            d['alt'] = icons[i[1]][1]
+
+                d['file'] = ' '.join(l[8:])
+                d['permissions'] = l[0]
+                d['user'] = l[2]
+                d['group'] = l[3]
+                d['size'] = l[4]
+                d['last_modified'] = ' '.join(l[5:8])                
+                files.append(d)
+            
+    path = dir
+    if(len(path) == 0):
+        path = dir.strip('/')
+
+    return render(
+        request,
+        'adminEnviron/webdav.html',
+        {
+            'menu':'adminEnviron/visualizacao',
+            'appname':'adminPromax',
+            'title':'adminEnviron/Index',
+            'year':datetime.now().year,
+            'request':request,
+            'webdav': files,
+            'path': dir,
         }
     )

@@ -6,12 +6,38 @@ from buildbot.config import GitInfo, BuildBotInfo
 
 
 class BaseControls():
+    active = ''
+    geos = []
+    
     def __init__(self, geo):
-        self.geo = geo
+        if(len(geo) == 0):
+            self.geos = os.popen('ls -d /[a-z][a-z0-9]/ 2>/dev/null').readlines()
+            self.geos = [ x.strip('\n').strip('/') for x in self.geos ]
+        else:
+            self.geos.append(geo)
+            active = geo
+
+    def status(self):
+        if (len(self.geos) == 0):
+            return 'Sem geografias disponíveis!'
+        else:
+            return ' '.join(self.geos)
+
+    def instances(self):
+        geo = None
+
+        for dir in os.listdir('/'):
+            if(re.match('^[a-z][a-z0-9]$', dir)):
+                if(geo):
+                    geo = geo + ';' + dir
+                else:
+                    geo = dir
+
+        return geo    
 
 
 class ApacheControls(BaseControls):
-    def __init__(self, geo):
+    def __init__(self, geo = ''):
         super(self.__class__, self).__init__(geo)
 
     def status(self):
@@ -25,10 +51,12 @@ class ApacheControls(BaseControls):
         return r
 
     def start(self):
-        return subprocess.check_output(['/amb/boot/S80_httpd_promax_h1'])
+        command = '/amb/boot/S80_httpd_promax_{0}'.format(self.active)
+        return subprocess.check_output([command])
 
     def stop(self):
-        return subprocess.check_output(['/amb/boot/K80_httpd_promax_h1'])
+        command = '/amb/boot/K80_httpd_promax_{0}'.format(self.active)
+        return subprocess.check_output([command])
 
     def config_files(self):
         mask = '.*\.conf'
@@ -74,42 +102,92 @@ class ApacheControls(BaseControls):
         else:
             return 'This file does not exists! [{0}]'.format(log_file)
 
-    def instances(self):
-        geo = None
-
-        for dir in os.listdir('/'):
-            if(re.match('^[a-z][a-z0-9]$', dir)):
-                if(geo):
-                    geo = geo + ';' + dir
-                else:
-                    geo = dir
-
-        return geo
-
 
 class DataBaseControls(BaseControls):
-    def __init__(self, geo):
+    def __init__(self, geo = ''):
         super(self.__class__, self).__init__(geo)
     
 
 class BuildBotControls(BaseControls):
-    def __init__(self, geo):
+    def __init__(self, geo = ''):
         super(self.__class__, self).__init__(geo)
 
     def status(self):
-        return str(sh.grep(sh.ps('-ef'), 'buildbot'))
+        #return str(sh.grep(sh.ps('-ef'), 'buildbot'))
+        result = os.popen('ps -ef|grep -v grep|grep buildbot').readlines()        
+        if (len(result) == 0):
+           result = 'Serviço inativo!'
+           return result
+        
+        return result[0]
 
+    def stop(self):
+        master = self.stopmaster()
+        worker = self.stopworker()
+
+        result = 'Erro ao parar os serviços!'
+        if (master and worker):
+            result = 'Sucesso serviços parados!'
+        elif(not master):
+            result = 'Não foi possível parar o MASTER!'
+        elif(not worker):
+            result = 'Não foi possível parar o WORKER!'
+
+        return result        
+
+    def start(self):
+        master = self.startmaster()
+        worker = self.startworker()
+
+        result = 'Erro ao iniciar os serviços!'
+        if (master and worker):
+            result = 'Sucesso serviços ativos!'
+        elif(not master):
+            result = 'Não foi possível iniciar o MASTER!'
+        elif(not worker):
+            result = 'Não foi possível iniciar o WORKER!'
+
+        return result
+                        
     def startmaster(self):
-        return subprocess.check_output(['/buildbot/buildbot/buildbot.promax.master.sh', '-s'])
+        #return subprocess.check_output(['/buildbot/buildbot/buildbot.promax.master.sh', '-s'])
+        result = os.popen('/buildbot/buildbot/buildbot.promax.master.sh -s >/dev/null 2>&1;echo $?').readlines()
+        try:
+            result = int(result[0])
+        except ValueError:
+            result = 0
+
+        return not bool(result)
 
     def startworker(self):
-        return subprocess.check_output(['/buildbot/buildbot/buildbot.promax.worker.sh', '-s'])        
+        #return subprocess.check_output(['/buildbot/buildbot/buildbot.promax.worker.sh', '-s'])        
+        result = os.popen('/buildbot/buildbot/buildbot.promax.worker.sh -s >/dev/null 2>&1;echo $?').readlines()
+        try:
+            result = int(result[0])
+        except ValueError:
+            result = 0
+
+        return not bool(result)
 
     def stopmaster(self):
-        return subprocess.check_output(['/buildbot/buildbot/buildbot.promax.master.sh', '-k'])
+        #return subprocess.check_output(['/buildbot/buildbot/buildbot.promax.master.sh', '-k'])
+        result = os.popen('/buildbot/buildbot/buildbot.promax.master.sh -k >/dev/null 2>&1;echo $?').readlines()
+        try:
+            result = int(result[0])
+        except ValueError:
+            result = 0
+
+        return not bool(result)
 
     def stopworker(self):
-        return subprocess.check_output(['/buildbot/buildbot/buildbot.promax.worker.sh', '-k'])
+        #return subprocess.check_output(['/buildbot/buildbot/buildbot.promax.worker.sh', '-k'])
+        result = os.popen('/buildbot/buildbot/buildbot.promax.worker.sh -k >/dev/null 2>&1;echo $?').readlines()
+        try:
+            result = int(result[0])
+        except ValueError:
+            result = 0
+
+        return not bool(result)
 
     def config_files(self):
         mask = '.*\.cfg'
@@ -157,18 +235,6 @@ class BuildBotControls(BaseControls):
         else:
             return 'This file does not exists! [{0}]'.format(log_file)
 
-    def instances(self):
-        geo = None
-
-        for dir in os.listdir('/'):
-            if(re.match('^[a-z][a-z0-9]$', dir)):
-                if(geo):
-                    geo = geo + ';' + dir
-                else:
-                    geo = dir
-
-        return geo
-
     def list_branches(self):
         dir = '/buildbot/gitpoller-workdir/2A/'
         os.chdir(dir)
@@ -178,7 +244,7 @@ class BuildBotControls(BaseControls):
 
 
 class EnvironControls(BaseControls):
-    def __init__(self, geo):
+    def __init__(self, geo = ''):
         super(self.__class__, self).__init__(geo)
 
     def environ(self):
@@ -194,9 +260,24 @@ class EnvironControls(BaseControls):
         root = '/' + self.geo
         return subprocess.check_output(['find', root, '-type', 'd'])
 
+    def list_dir(self, dir = ''):
+        if(len(dir) == 0):
+            dir = 'h1'
+        if(dir[0] != '/'):
+            dir = '/' + dir
+        if(os.path.isdir(dir)):
+            try:
+                result = sh.grep(sh.ls(dir, '-l'), '-v', "^total").stdout
+            except Exception as e:
+                result = 'Erro ao listar diretório!'
+        else:
+            result = 'Diretório não existente!'
+
+        return result
+
 
 class JobsControls(BaseControls):
-    def __init__(self, geo):
+    def __init__(self, geo = ''):
         super(self.__class__, self).__init__(geo)
 
     def startjob(self, job):

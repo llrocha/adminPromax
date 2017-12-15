@@ -4,7 +4,9 @@ from . import views
 
 app_name = 'adminEnviron'
 urlpatterns = [
-    url(r'', views.show_tree, name='show_tree'),
+    url(r'^$', views.index, name='index'),
+    url(r'construcao/$', views.show_tree, name='show_tree'),
+    url(r'visualizacao/(?P<dir>.*)$', views.webdav, name='webdav'),
     #url(r'^$', views.IndexView.as_view(), name='index'),
     #url(r'^(?P<pk>[0-9]+)/$', views.DetailView.as_view(), name='detail'),
     #url(r'^(?P<pk>[0-9]+)/results/$', views.ResultsView.as_view(), name='results'),

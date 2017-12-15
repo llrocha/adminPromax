@@ -134,6 +134,7 @@ def controle(request, command = ''):
             'title':'adminBuildBot/Controle',
             'year':datetime.now().year,
             'request':request,
+            'command': command
         }
     )
 

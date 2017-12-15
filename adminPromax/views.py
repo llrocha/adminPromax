@@ -4,10 +4,14 @@ from datetime import datetime
 from django.views import generic
 from django.http import HttpRequest, HttpResponse
 # Create your views here.
+from controlServer.controlclient import ExecuteRemoteCommand
 
 def index(request):
     """Renders the 'index' page."""
     assert isinstance(request, HttpRequest)
+
+    instancias = ExecuteRemoteCommand('90.0.2.174', 9999, 'BaseControls->instances')
+    instancias = instancias.split(';')    
     return render(
         request,
         'adminPromax/index.html',
@@ -17,6 +21,7 @@ def index(request):
             'title':'adminPromax/Index',
             'year':datetime.now().year,
             'request':request,
+            'instancias': instancias,
         }
     )
 
