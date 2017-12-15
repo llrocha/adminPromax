@@ -1,4 +1,5 @@
 {% if teste %}
+
   <style>
     .dropdown-submenu {
         position: relative;
@@ -48,7 +49,9 @@
         border-radius: 6px 0 6px 6px;
     }
   </style>
+
 {% endif %}
+{% if teste %}
   <nav class="navbar navbar-inverse navbar-fixed-top" style="background: #1d285a">
     <div class="container">
       <div class="navbar-header">
@@ -181,6 +184,128 @@
           <li><a href="/sobre">Sobre</a></li>
           {% endif %}
         </ul>
-    </div><!--/.nav-collapse -->
+    </div>< !--/.nav-collapse -->
     </div>
+  </nav>
+  {% endif %}
+  
+
+
+
+  <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+      <a class="navbar-brand" href="/">{{ appname }}</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#MainMenu" aria-controls="MainMenu" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="MainMenu">
+        <ul class="navbar-nav mr-auto">
+          
+          {% if 'adminEnviron' in menu %}
+          <li class="nav-item dropdown active">
+          {% else %}
+          <li class="nav-item dropdown">
+          {% endif %}
+            <a class="nav-link dropdown-toggle" href="/environ/" id="ddenviron" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Ambiente</a>
+            <div class="dropdown-menu" aria-labelledby="ddenviron">
+              <a class="dropdown-item" href="/environ/visualizacao/">Visualização</a>
+              <a class="dropdown-item" href="/environ/construcao/">Construção</a>
+            </div>
+          </li>
+
+          {% if 'adminApache' in menu %}
+          <li class="nav-item dropdown active">
+          {% else %}
+          <li class="nav-item dropdown">
+          {% endif %}
+            <a class="nav-link dropdown-toggle" href="/apache/" id="dropdownApache" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Apache</a>
+            <div class="dropdown-menu" aria-labelledby="dropdownApache">
+                <a class="dropdown-item" href="/apache/status/">Status</a>
+                <a class="dropdown-item" href="/apache/configuracao/">Configuração</a>
+                <a class="dropdown-item" href="/apache/logs/">Logs</a>
+                <a class="dropdown-item" href="/apache/instancias/">Instâncias</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="/apache/start/">Iniciar</a>
+                <a class="dropdown-item" href="/apache/stop/">Parar</a>
+            </div>
+          </li>
+
+            
+          {% if 'adminBases' in menu %}
+          <li class="nav-item dropdown active">
+          {% else %}
+          <li class="nav-item dropdown">
+          {% endif %}
+            <a class="nav-link dropdown-toggle" href="/bases/" id="dropdownBases" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Bases</a>
+            <div class="dropdown-menu" aria-labelledby="dropdownBases">
+              <a class="dropdown-item" href="/bases/disponivel/">Disponível</a>
+              <a class="dropdown-item" href="/bases/selecionar/">Selecionar</a>
+            </div>
+          </li>
+  
+          {% if 'adminBuildbot' in menu %}
+          <li class="nav-item dropdown active">
+          {% else %}
+          <li class="nav-item dropdown">
+          {% endif %}
+            <a class="nav-link dropdown-toggle" href="http://example.com" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Buildbot</a>
+            <div class="dropdown-menu" aria-labelledby="dropdown01">
+              <a class="dropdown-item" href="/buildbot/configuracao/">Configuração</a>
+              <a class="dropdown-item" href="/buildbot/controle/">Controle</a>
+              <a class="dropdown-item" href="/buildbot/logs/master/">Logs</a>
+              <a class="dropdown-item" href="/buildbot/status/">Status</a>
+              <a class="dropdown-item" href="/buildbot/">Buildbot Panel</a>
+            </div>
+          </li>
+  
+          {% if 'adminGit' in menu %}
+          <li class="nav-item dropdown active">
+          {% else %}
+          <li class="nav-item dropdown">
+          {% endif %}
+            <a class="nav-link dropdown-toggle" href="/git/" id="dropdownGit" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Git</a>
+            <div class="dropdown-menu" aria-labelledby="dropdownGit">
+              <a class="dropdown-item" href="/git/">Configuração</a>
+            </div>
+          </li>
+  
+          {% if 'adminJobs' in menu %}
+          <li class="nav-item dropdown active">
+          {% else %}
+          <li class="nav-item dropdown">
+          {% endif %}
+            <a class="nav-link dropdown-toggle" href="/jobs/" id="dropdownJobs" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Jobs</a>
+            <div class="dropdown-menu" aria-labelledby="dropdownJobs">
+              <a class="dropdown-item" href="/jobs/listar/">Listar</a>
+              <a class="dropdown-item" href="/jobs/configuracao/">Configuração</a>
+              <a class="dropdown-item" href="/jobs/executar/">Executar</a>
+            </div>
+          </li>
+  
+          {% if 'contato' in menu %}
+          <li class="nav-item active">
+          {% else %}
+          <li class="nav-item">
+          {% endif %}
+            <a class="nav-link" href="/contato/">Contato</a>
+          </li>
+
+          {% if 'sobre' in menu %}
+          <li class="nav-item active">
+          {% else %}
+          <li class="nav-item">
+          {% endif %}            
+            <a class="nav-link disabled" href="/sobre/">Sobre</a>
+          </li>
+
+
+        </ul>
+        <!--
+        <form class="form-inline my-2 my-lg-0">
+          <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
+          <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+        </form>
+      -->
+      
+      </div>
   </nav>

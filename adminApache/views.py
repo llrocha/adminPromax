@@ -15,6 +15,7 @@ from controlServer.controlclient import ExecuteRemoteCommand
 def index(request):
     """Renders the 'index' page."""
     assert isinstance(request, HttpRequest)
+
     return render(
         request,
         'adminApache/index.html',
@@ -24,6 +25,10 @@ def index(request):
             'title':'adminApache/Index',
             'year':datetime.now().year,
             'request':request,
+            'errors': [{
+                'type': 'danger', 
+                'title': 'Apache inativo!', 
+                'message': 'Verificar se o servidor Apache está ativo em: <a href="/apache/controle/" class="alert-link">Controle</a>.'}]
         }
     )
 
@@ -43,6 +48,7 @@ def instancias(request):
             'year':datetime.now().year,
             'request':request,
             'instancias': instancias,
+            'errors': [],
         }
     )
 

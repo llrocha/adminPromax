@@ -1,0 +1,7 @@
+{% for error in errors %}
+<div class="container">  
+    <div class="alert alert-{{error.type}}" role="alert">
+        <strong>{{error.title}}</strong> {{error.message|safe}}
+    </div>    
+</div>
+{% endfor %}
