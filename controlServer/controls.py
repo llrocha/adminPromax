@@ -109,6 +109,8 @@ class DataBaseControls(BaseControls):
     
 
 class BuildBotControls(BaseControls):
+    geo = ''
+
     def __init__(self, geo = ''):
         super(self.__class__, self).__init__(geo)
 
@@ -295,12 +297,27 @@ class ServerControls():
     """
 
     def __init__(self, geo):
-        super(self.__class__, self).__init__(geo)
-        self.modules = []
+        #super(self.__class__, self).__init__(geo)
+        self.geo = geo
+        self.classes = [
+            #'BaseControls',
+            'ApacheControls',
+            'DataBaseControls',
+            'BuildBotControls',
+            'EnvironControls',
+            'JobsControls',
+        ]
+        self.factory = {}
+        for class_name in self.classes:
+            klass = globals()[class_name]
+            obj = klass(self.geo)
+            self.factory[class_name] = obj
 
-    def register_class(self, cls):
-        self.modules.append(cls)
+    def register_class(self, class_name):
+        klass = globals()[class_name]
+        obj = klass(self.geo)
+        self.factory[class_name] = obj
 
-    def unregister_class(self, cls):
-        self.modules.remove(cls)
+    def unregister_class(self, class_name):
+        self.factory.pop(class_name)
 

@@ -4,6 +4,8 @@ from datetime import datetime
 from django.views import generic
 from django.http import HttpRequest, HttpResponse
 
+from adminClasses.adminClasses import BaseView
+
 from controlServer.controlclient import ExecuteRemoteCommand
 import urllib.request
 import re
@@ -14,16 +16,65 @@ import os
 def index(request):
     """Renders the 'index' page."""
     assert isinstance(request, HttpRequest)
-    return render(
-        request,
-        'adminEnviron/index.html',
-        {
+
+    context = BaseView(request).context()
+    context.update({
             'menu':'adminEnviron',
             'appname':'adminPromax',
             'title':'adminEnviron/Index',
             'year':datetime.now().year,
             'request':request,
-        }
+        })
+
+    return render(
+        request,
+        'adminEnviron/index.html',
+        context
+    )
+
+
+def monitoramento(request):
+    """Renders the 'index' page."""
+    assert isinstance(request, HttpRequest)
+
+    context = BaseView(request).context()
+    context.update({
+            'menu':'adminEnviron',
+            'appname':'adminPromax',
+            'title':'adminEnviron/Monitoramento',
+            'year':datetime.now().year,
+            'request':request,
+        })
+
+    return render(
+        request,
+        'adminEnviron/monitoramento.html',
+        context
+    )
+
+
+def instancias(request):
+    """Renders the 'instancias' page."""
+    assert isinstance(request, HttpRequest)
+
+    instancias = ExecuteRemoteCommand('90.0.2.174', 9999, 'ApacheControls->instances')
+    instancias = instancias.split(';')
+
+    context = BaseView(request).context()
+    context.update({
+            'menu':'adminEnviron/instancias',
+            'appname':'adminPromax',
+            'title':'adminEnviron/Instâncias',
+            'year':datetime.now().year,
+            'request':request,
+            'instancias': instancias,
+            'errors': []
+        })
+
+    return render(
+        request,
+        'adminEnviron/instancias.html',
+        context
     )
 
 
@@ -58,30 +109,31 @@ def show_tree(request):
     path_list = ExecuteRemoteCommand('90.0.2.174', 9999, 'EnvironControls->environment_tree')
     
     tree = {}    
-    
     for path in path_list.split():
-        #path = path.split()[0]
         path = path.split('/')
         path.remove('')
         insert_dict(tree, path)
     
     html_tree = create_tree(tree, 0)
 
-    return render(
-        request,
-        'adminEnviron/treeview.html',
-        {
+    context = BaseView(request).context()
+    context.update({
             'menu':'adminEnviron/construcao',
             'appname':'adminPromax',
             'title':'adminEnviron/Index',
             'year':datetime.now().year,
             'request':request,
             'html_tree': html_tree
-        }
+        })
+
+    return render(
+        request,
+        'adminEnviron/treeview.html',
+        context
     )
 
 
-def webdav(request, dir = ''):
+def visualizacao(request, dir = ''):
     icons = {
         '*': ['default.png', '[   ]'],
         '7z': ['archive.png', '[   ]'],
@@ -252,10 +304,8 @@ def webdav(request, dir = ''):
     if(len(path) == 0):
         path = dir.strip('/')
 
-    return render(
-        request,
-        'adminEnviron/webdav.html',
-        {
+    context = BaseView(request).context()
+    context.update({
             'menu':'adminEnviron/visualizacao',
             'appname':'adminPromax',
             'title':'adminEnviron/Index',
@@ -263,5 +313,10 @@ def webdav(request, dir = ''):
             'request':request,
             'webdav': files,
             'path': dir,
-        }
+        })
+
+    return render(
+        request,
+        'adminEnviron/visualizacao.html',
+        context
     )

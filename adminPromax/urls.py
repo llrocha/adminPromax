@@ -22,7 +22,7 @@ urlpatterns = [
     url(r'^apache/', include('adminApache.urls')),
     url(r'^bases/', include('adminBases.urls')),
     url(r'^buildbot/', include('adminBuildBot.urls')),
-    url(r'^environ/', include('adminEnviron.urls')),
+    url(r'^ambiente/', include('adminEnviron.urls')),
     url(r'^git/', include('adminGit.urls')),
     url(r'^jobs/', include('adminJobs.urls')),
     url(r'^contato/', views.contato),

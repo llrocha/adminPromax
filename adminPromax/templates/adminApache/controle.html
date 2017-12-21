@@ -5,13 +5,13 @@
     .btn-labeled {padding-top: 0;padding-bottom: 0;}
     .btn { margin-bottom:10px; }
 </style>
-<h1>Controle</h1>
-<a href="start/" class="btn btn-labeled btn-success" role="button">
-    <span class="btn-label"><i class="glyphicon glyphicon-ok"></i></span>
-    Start
-</a>
-<a href="stop/" class="btn btn-labeled btn-danger" role="button">
-    <span class="btn-label"><i class="glyphicon glyphicon-remove"></i></span>
-    Stop
-</a>
+
+<div class="row">
+<div class="col-md-1">
+    <a href="start/" id="button" name="button" class="btn btn-success">Start</a>
+</div>
+<div class="col-md-1">
+    <a href="stop/" id="button" name="button" class="btn btn-danger">Stop</a>
+</div>
+</div>
 {% endblock %}

@@ -1,0 +1,15 @@
+{% if breadcrumb %}
+<div class="container-fluid">  
+    <nav aria-label="breadcrumb" role="navigation">
+        <ol class="breadcrumb">
+        {% for crumb in breadcrumb %}
+            {% if forloop.last %}
+            <li class="breadcrumb-item active" aria-current="page">{{crumb|capfirst}}</li>
+            {% else %}
+            <li class="breadcrumb-item"><a href="/{{crumb}}/">{{crumb|capfirst}}</a></li>
+            {% endif %}
+        {% endfor %}
+        </ol>
+    </nav>
+</div>
+{% endif %}
