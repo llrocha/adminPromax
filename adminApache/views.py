@@ -20,17 +20,17 @@ def index(request):
 
     context = BaseView(request).context()
     context.update({
-            'menu':'adminApache',
-            'appname':'adminPromax',
-            'title':'adminApache/Index',
-            'year':datetime.now().year,
-            'request':request,
-            'errors': [{
-                'type': 'danger', 
-                'title': 'Apache inativo!', 
-                'message': 'Verificar se o servidor Apache está ativo em: <a href="/apache/controle/" class="alert-link">Controle</a>.'
-            }],
-        })
+        'menu':'adminApache',
+        'appname':'adminPromax',
+        'title':'adminApache/Index',
+        'year':datetime.now().year,
+        'request':request,
+        'errors': [{
+            'type': 'danger', 
+            'title': 'Apache inativo!', 
+            'message': 'Verificar se o servidor Apache está ativo em: <a href="/apache/controle/" class="alert-link">Controle</a>.'
+        }],
+    })
 
     return render(
         request,
@@ -42,7 +42,7 @@ def configuracao(request, file = ''):
     """Renders the 'configuracao' page."""
     assert isinstance(request, HttpRequest)
 
-    config_files = ExecuteRemoteCommand('90.0.2.174', 9999, 'ApacheControls->config_files->h1')
+    config_files = ExecuteRemoteCommand('90.0.2.174', 9999, 'ApacheControls->config_files')
     config_files = config_files.split(';')
     config_files.reverse()
     if(file):

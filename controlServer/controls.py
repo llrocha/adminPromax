@@ -13,9 +13,11 @@ class BaseControls():
         if(len(geo) == 0):
             self.geos = os.popen('ls -d /[a-z][a-z0-9]/ 2>/dev/null').readlines()
             self.geos = [ x.strip('\n').strip('/') for x in self.geos ]
+            if(len(geos) > 0):
+                self.active = geos[0]
         else:
             self.geos.append(geo)
-            active = geo
+            self.active = geo
 
     def status(self):
         if (len(self.geos) == 0):
@@ -62,7 +64,7 @@ class ApacheControls(BaseControls):
         mask = '.*\.conf'
         files = ''
         try:
-            dir = '/{0}/etc/apache/promax/'.format(self.geo)
+            dir = '/{0}/etc/apache/promax/'.format(self.active)
             for config_file in os.listdir(dir):
                 if(re.match(mask, config_file)):
                     if(files):
@@ -75,7 +77,7 @@ class ApacheControls(BaseControls):
         return files
 
     def configfile_content(self, file):
-        config_file = '/{0}/etc/apache/promax/{1}'.format(self.geo, file.replace('%', '.'))
+        config_file = '/{0}/etc/apache/promax/{1}'.format(self.active, file.replace('%', '.'))
         if(os.path.isfile(config_file)):
             return subprocess.check_output(['cat', config_file])
         else:
@@ -84,7 +86,7 @@ class ApacheControls(BaseControls):
     def log_files(self):
         files = ''
         try:
-            dir = '/{0}/promax/log/httpd/'.format(self.geo)
+            dir = '/{0}/promax/log/httpd/'.format(self.active)
             for log_file in os.listdir(dir):
                 if(files):
                     files = files + ';' + log_file
@@ -96,7 +98,7 @@ class ApacheControls(BaseControls):
         return files
 
     def logfile_content(self, file):
-        log_file = '/{0}/promax/log/httpd/{1}'.format(self.geo, file.replace('%', '.'))
+        log_file = '/{0}/promax/log/httpd/{1}'.format(self.active, file.replace('%', '.'))
         if(os.path.isfile(log_file)):
             return subprocess.check_output(['cat', log_file])
         else:
@@ -195,7 +197,7 @@ class BuildBotControls(BaseControls):
         mask = '.*\.cfg'
         files = ''
         try:
-            dir = '/buildbot/buildbot/'.format(self.geo)
+            dir = '/buildbot/buildbot/'.format(self.active)
             for config_file in os.listdir(dir):
                 if(re.match(mask, config_file)):
                     if(files):
@@ -244,7 +246,6 @@ class BuildBotControls(BaseControls):
         return result.replace('\n', ';').replace(' ', '')
 
 
-
 class EnvironControls(BaseControls):
     def __init__(self, geo = ''):
         super(self.__class__, self).__init__(geo)
@@ -259,7 +260,7 @@ class EnvironControls(BaseControls):
         return subprocess.check_output(['egrep', '"Mem|Cache|Swap"', '/proc/meminfo'])
 
     def environment_tree(self):
-        root = '/' + self.geo
+        root = '/' + self.active
         return subprocess.check_output(['find', root, '-type', 'd'])
 
     def list_dir(self, dir = ''):

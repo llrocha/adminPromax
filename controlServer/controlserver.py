@@ -18,61 +18,27 @@ class ControlServerTCPHandler(socketserver.BaseRequestHandler):
     #def __init__(self, request, client_address, server):
     #    super(self.__class__, self).__init__(request, client_address, server)
         
-
     def LogMsg(self, msg):
         print('[{0}] - {1}'.format(datetime.now(), msg))
 
-    def call_method(self, class_name, method_name, params = []):
-        self.LogMsg("CLASS=>METHOD({0}.{1})".format(class_name, method_name))
-        self.LogMsg("CLASS=>({0})".format(type(class_name)))
-        try:
-            class_type = getattr(controls, class_name)
-        except AttributeError as e:
-            class_type = None
-            self.LogMsg("Attribute Error({0}): {1}".format(e.errno, e.strerror))
-
-        try:
-            method = getattr(controls, class_name)
-        except AttributeError as e:
-            method = None
-            self.LogMsg("Attribute Error({0}): {1}".format(e.errno, e.strerror))
-
-        geo = 'h1'
-        try:
-            obj = class_type(geo)
-            method = getattr(obj, method_name)
-            data = method(*params)
-
-            if(type(data) is str):
-                return self.fernet_key.encrypt(data.encode('utf-8'))
-            else:
-                return self.fernet_key.encrypt(data)
-        except:
-            data = 'Ocorreu um erro no processamento'.encode('utf-8')
-            return self.fernet_key.encrypt(data)
-
     def handle(self):
         # self.request is the TCP socket connected to the client
-        self.data = self.request.recv(1024).strip()
-        self.LogMsg("{0} wrote: {1}".format(self.client_address[0], self.data))
+        client_address = self.client_address[0]
+        self.data = self.request.recv(1024).strip()        
+        self.LogMsg("{0} wrote: {1}".format(client_address, self.data))
     
         request = self.fernet_key.decrypt(self.data)
         request = str(request,'utf-8')
-        self.LogMsg('CALL={0}'.format(request))
+        self.LogMsg('{0} call: {1}'.format(client_address, request))
         command = request.split('->')
 
         class_name = command[0]
         method_name = command[1]
         params = command[2:]
 
-        self.LogMsg('class={0}'.format(class_name))
-        self.LogMsg('method={0}'.format(method_name))
-        c = 0
-        for param in params:
-            self.LogMsg('param{0}={1}'.format(c, param))
-            c += 1
+        log = '{0} wrote: class.method={1}.{2}({3})'.format(client_address, class_name, method_name, ', '.join(params))
+        self.LogMsg(log)
 
-        #data = self.call_method(class_name, method_name, params)
         try:
             obj = self.sc.factory[class_name]
             method = getattr(obj, method_name)
@@ -86,7 +52,7 @@ class ControlServerTCPHandler(socketserver.BaseRequestHandler):
             self.LogMsg(data)
             raise
 
-        self.fernet_key.encrypt(data)
+        data = self.fernet_key.encrypt(data)
 
         self.LogMsg(data)
 
