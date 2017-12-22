@@ -8,6 +8,8 @@ from datetime import datetime
 from django.views import generic
 from django.http import HttpRequest, HttpResponse
 
+from adminClasses.adminClasses import BaseView
+
 from controlServer.controlclient import ExecuteRemoteCommand
 
 # Create your views here.
@@ -16,40 +18,24 @@ def index(request):
     """Renders the 'index' page."""
     assert isinstance(request, HttpRequest)
 
+    context = BaseView(request).context()
+    context.update({
+        'menu':'adminApache',
+        'appname':'adminPromax',
+        'title':'adminApache/Index',
+        'year':datetime.now().year,
+        'request':request,
+        'errors': [{
+            'type': 'danger', 
+            'title': 'Apache inativo!', 
+            'message': 'Verificar se o servidor Apache está ativo em: <a href="/apache/controle/" class="alert-link">Controle</a>.'
+        }],
+    })
+
     return render(
         request,
         'adminApache/index.html',
-        {
-            'menu':'adminApache',
-            'appname':'adminPromax',
-            'title':'adminApache/Index',
-            'year':datetime.now().year,
-            'request':request,
-            'errors': [{
-                'type': 'danger', 
-                'title': 'Apache inativo!', 
-                'message': 'Verificar se o servidor Apache está ativo em: <a href="/apache/controle/" class="alert-link">Controle</a>.'}]
-        }
-    )
-
-def instancias(request):
-    """Renders the 'instancias' page."""
-    assert isinstance(request, HttpRequest)
-
-    instancias = ExecuteRemoteCommand('90.0.2.174', 9999, 'ApacheControls->instances')
-    instancias = instancias.split(';')
-    return render(
-        request,
-        'adminApache/instancias.html',
-        {
-            'menu':'adminApache/instancias',
-            'appname':'adminPromax',
-            'title':'adminApache/Instâncias',
-            'year':datetime.now().year,
-            'request':request,
-            'instancias': instancias,
-            'errors': [],
-        }
+        context
     )
 
 def configuracao(request, file = ''):
@@ -67,20 +53,24 @@ def configuracao(request, file = ''):
         file_content = ''
         file_css = ''
 
-    return render(
-        request,
-        'adminApache/configuracao.html',
-        {
+    context = BaseView(request).context()
+    context.update({
             'menu':'adminApache/configuracao',
             'appname':'adminPromax',
-            'title':'adminApache/Index',
+            'title':'adminApache/Configuracao',
             'year':datetime.now().year,
             'request':request,
             'config_files': config_files,
             'file_content': file_content,
             'file_css': file_css,
             'config_file': file,
-        }
+            'errors': [],
+        })
+
+    return render(
+        request,
+        'adminApache/configuracao.html',
+        context
     )
 
 def logs(request, file = ''):
@@ -98,53 +88,68 @@ def logs(request, file = ''):
         file_content = ''
         file_css = ''
 
-    return render(
-        request,
-        'adminApache/logs.html',
-        {
+    context = BaseView(request).context()
+    context.update({
             'menu':'adminApache/logs',
             'appname':'adminPromax',
-            'title':'adminApache/Index',
+            'title':'adminApache/Logs',
             'year':datetime.now().year,
             'request':request,
             'config_files': config_files,
             'file_content': file_content,
             #'file_css': file_css,
-        }
+            'errors': [],
+        })
+
+    return render(
+        request,
+        'adminApache/logs.html',
+        context
     )
 
 def controle(request, command = ''):
     """Renders the 'controle' page."""
     assert isinstance(request, HttpRequest)
+
     if(command):
         config_files = ExecuteRemoteCommand('90.0.2.174', 9999, 'ApacheControls->' + command)
+
+    context = BaseView(request).context()
+    context.update({
+            'menu':'adminApache/controle',
+            'appname':'adminPromax',
+            'title':'adminApache/Controle',
+            'year':datetime.now().year,
+            'request':request,
+            'command': command,
+            'errors': [],
+        })
+
     return render(
         request,
         'adminApache/controle.html',
-        {
-            'menu':'adminApache/controle',
-            'appname':'adminPromax',
-            'title':'adminApache/Index',
-            'year':datetime.now().year,
-            'request':request,
-            'command': command
-        }
+        context
     )
 
 def status(request):
     """Renders the 'status' page."""
     assert isinstance(request, HttpRequest)
+
     status = ExecuteRemoteCommand('90.0.2.174', 9999, 'ApacheControls->status')
+
+    context = BaseView(request).context()
+    context.update({
+            'menu':'adminApache/status',
+            'appname':'adminPromax',
+            'title':'adminApache/Status',
+            'year':datetime.now().year,
+            'request':request,
+            'status': status,
+            'errors': [],
+        })
 
     return render(
         request,
         'adminApache/status.html',
-        {
-            'menu':'adminApache/status',
-            'appname':'adminPromax',
-            'title':'adminApache/Index',
-            'year':datetime.now().year,
-            'request':request,
-            'status': status,
-        }
+        context
     )

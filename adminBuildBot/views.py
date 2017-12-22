@@ -8,42 +8,30 @@ from datetime import datetime
 from django.views import generic
 from django.http import HttpRequest, HttpResponse
 
+from adminClasses.adminClasses import BaseView
+
 from controlServer.controlclient import ExecuteRemoteCommand
 # Create your views here.
 
 def index(request):
     """Renders the 'index' page."""
     assert isinstance(request, HttpRequest)
-    return render(
-        request,
-        'adminBuildBot/buildbot.html',
-        {
+
+    context = BaseView(request).context()
+    context.update({
             'menu':'adminBuildBot/index',
             'appname':'adminPromax',
             'title':'adminBuildBot/Index',
             'year':datetime.now().year,
             'request':request,
-        }
-    )
+        })
 
-def instancias(request):
-    """Renders the 'instancias' page."""
-    assert isinstance(request, HttpRequest)
-
-    instancias = ExecuteRemoteCommand('90.0.2.174', 9999, 'BuildBotControls->instances')
-    instancias = instancias.split(';')
     return render(
         request,
-        'adminBuildBot/instancias.html',
-        {
-            'menu':'adminBuildBot/instancias',
-            'appname':'adminPromax',
-            'title':'adminBuildBot/Instâncias',
-            'year':datetime.now().year,
-            'request':request,
-            'instancias': instancias,
-        }
+        'adminBuildBot/buildbot.html',
+        context
     )
+
 
 def configuracao(request, file = ''):
     """Renders the 'configuracao' page."""
@@ -60,10 +48,8 @@ def configuracao(request, file = ''):
         file_content = highlight(file_content, PythonLexer(), HtmlFormatter())
         file_css = HtmlFormatter().get_style_defs('.highlight')
 
-    return render(
-        request,
-        'adminBuildBot/configuracao.html',
-        {
+    context = BaseView(request).context()
+    context.update({
             'menu':'adminBuildBot/configuracao',
             'appname':'adminPromax',
             'title':'adminBuildBot/Configuração',
@@ -72,13 +58,17 @@ def configuracao(request, file = ''):
             'config_files': config_files,
             'file_content': file_content,
             'file_css': file_css,
-        }
+        })
+
+    return render(
+        request,
+        'adminBuildBot/configuracao.html',
+        context
     )
 
 def logs(request, instance = '', file = ''):
     """Renders the 'configuracao' page."""
     assert isinstance(request, HttpRequest)
-
 
     if(file):
         file_content = ExecuteRemoteCommand('90.0.2.174', 9999, 'BuildBotControls->logfile_content->' + instance + '->' + file)
@@ -103,13 +93,11 @@ def logs(request, instance = '', file = ''):
         master = ''
         worker = 'active'
 
-    return render(
-        request,
-        'adminBuildBot/logs.html',
-        {
-            'menu':'adminApache/logs',
+    context = BaseView(request).context()
+    context.update({
+            'menu':'adminBuildBot/logs',
             'appname':'adminPromax',
-            'title':'adminApache/Index',
+            'title':'adminBuildBot/Logs',
             'year':datetime.now().year,
             'request':request,
             'config_files': config_files,
@@ -117,7 +105,12 @@ def logs(request, instance = '', file = ''):
             'instance': instance,
             'master': master,
             'worker': worker,
-        }
+        })
+
+    return render(
+        request,
+        'adminBuildBot/logs.html',
+        context
     )
 
 def controle(request, command = ''):
@@ -125,17 +118,21 @@ def controle(request, command = ''):
     assert isinstance(request, HttpRequest)
     if(command):
         config_files = ExecuteRemoteCommand('90.0.2.174', 9999, 'BuildBotControls->' + command)
-    return render(
-        request,
-        'adminBuildBot/controle.html',
-        {
+
+    context = BaseView(request).context()
+    context.update({
             'menu':'adminBuildBot/controle',
             'appname':'adminPromax',
             'title':'adminBuildBot/Controle',
             'year':datetime.now().year,
             'request':request,
             'command': command
-        }
+        })
+
+    return render(
+        request,
+        'adminBuildBot/controle.html',
+        context
     )
 
 def status(request):
@@ -143,15 +140,42 @@ def status(request):
     assert isinstance(request, HttpRequest)
     status = ExecuteRemoteCommand('90.0.2.174', 9999, 'BuildBotControls->status')
 
-    return render(
-        request,
-        'adminBuildBot/status.html',
-        {
+    context = BaseView(request).context()
+    context.update({
             'menu':'adminBuildBot/status',
             'appname':'adminPromax',
             'title':'adminBuildBot/Status',
             'year':datetime.now().year,
             'request':request,
             'status': status,
-        }
+        })
+        
+    return render(
+        request,
+        'adminBuildBot/status.html',
+        context
+    )
+
+
+def instancias(request):
+    """Renders the 'instancias' page."""
+    assert isinstance(request, HttpRequest)
+
+    instancias = ExecuteRemoteCommand('90.0.2.174', 9999, 'BuildBotControls->instances')
+    instancias = instancias.split(';')
+
+    context = BaseView(request).context()
+    context.update({
+            'menu':'adminBuildBot/instancias',
+            'appname':'adminPromax',
+            'title':'adminBuildBot/Instâncias',
+            'year':datetime.now().year,
+            'request':request,
+            'instancias': instancias,
+        })
+
+    return render(
+        request,
+        'adminBuildBot/instancias.html',
+        context
     )

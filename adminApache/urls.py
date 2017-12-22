@@ -5,8 +5,7 @@ from . import views
 app_name = 'adminApache'
 urlpatterns = [
     url(r'logs/(?P<file>.*)/$', views.logs, name='logs'),
-    url(r'logs/$', views.logs, name='logs'),
-    url(r'instancias/$', views.instancias, name='instancias'),
+    url(r'logs/$', views.logs, name='logs'),    
     url(r'configuracao/(?P<file>.*)/$', views.configuracao, name='configuracao'),
     url(r'configuracao/$', views.configuracao, name='configuracao'),
     url(r'controle/(?P<command>.*)/$', views.controle, name='controle'),

@@ -1,8 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
 <div class="container">
-<h1>Git {{button}}</h1>
-<hr>
 <form action='/git/configuracao/' method="post">
 {% csrf_token %}
 <div class="input-group">

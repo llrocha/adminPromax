@@ -1,0 +1,68 @@
+{% extends "adminEnviron/index.html" %}
+{% load staticfiles %}
+{% block inner_content %}
+
+<nav aria-label="breadcrumb" role="navigation">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item active" aria-current="page">{{path}}</li>
+    </ol>
+</nav>
+
+<link href="{% static 'pathview/style.css' %}" rel="stylesheet">
+
+<div class="row">
+    <div class="col-md-12">
+        
+
+        <div class="wrapper">
+            <table id="indexlist">
+                <tr class="indexhead">
+                    <th class="indexcolicon"><img src="{% static 'pathview/icons/blank.png'%}" alt="[ICO]" /></th>
+                    <th class="indexcolname"><a href="?C=N;O=D">Name</a></th>
+                    <th class="indexcolpermissions"><a href="?C=M;O=A">Permissions</a></th>
+                    <th class="indexcoluser">User</th>
+                    <th class="indexcolgroup">Group</th>                    
+                    <th class="indexcolsize"><a href="?C=S;O=A">Size</a></th>
+                    <th class="indexcollastmod"><a href="?C=M;O=A">Last modified</a></th>
+                </tr>
+                <tr class="odd">
+                    <td class="indexcolicon"><a href="../"><img src="{% static 'pathview/icons/folder-home.png'%}" alt="[PARENTDIR]" /></a></td>
+                    <td class="indexcolname"><a href="../">Parent Directory</a></td>
+                    <td class="indexcolpermissions">&nbsp;</td>
+                    <td class="indexcoluser">&nbsp;</td>
+                    <td class="indexcolgroup">&nbsp;</td>
+                    <td class="indexcolsize">&nbsp;</td>
+                    <td class="indexcollastmod">&nbsp;</td>
+                </tr>
+                {% for file in webdav %}
+                <tr class="{% cycle 'even' 'odd' %}">
+                    <td class="indexcolicon"><a href="{{file.file}}"><img src='{% static "pathview/icons/"%}{{file.icon}}' alt="{{file.alt}}" /></a></td>
+                    <td class="indexcolname"><a href="{{file.file}}">{{file.file}}</a></td>
+                    <td class="indexcolpermissions">{{file.permissions}}</td>
+                    <td class="indexcoluser">{{file.user}}</td>
+                    <td class="indexcolgroup">{{file.group}}</td>
+                    <td class="indexcolsize">{{file.size}}</td>
+                    <td class="indexcollastmod">{{file.last_modified}}</td>
+                </tr>
+                {% endfor %}
+            </table>    
+        </div><!--/.wrapper-->
+            
+        
+    </div>
+</div>
+<script type="text/javascript">
+    // grab the 2nd child and add the parent class. tr:nth-child(2)
+    document.getElementsByTagName('tr')[1].className = 'parent';
+    // fix links when not adding a / at the end of the URI
+    var uri = window.location.pathname.substr(1);
+    if (uri.substring(uri.length-1) != '/'){
+        var indexes = document.getElementsByClassName('indexcolname'),
+        i = indexes.length;
+        while (i--){
+            var a = indexes[i].getElementsByTagName('a')[0];
+            a.href = '/' + uri + '/' + a.getAttribute('href',2);
+        }
+    }
+</script>
+{% endblock %}

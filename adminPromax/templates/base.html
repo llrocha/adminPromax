@@ -23,8 +23,7 @@
 
     <!-- Custom styles for this template -->
     <link href="{% static 'bootstrap/custom/starter-template.css' %}" rel="stylesheet">
-    
-
+    <link href="{% static 'bootstrap/custom/sticky-footer.css' %}" rel="stylesheet">
   </head>
 <body>
 <!-- MENU ======================================================================-->
@@ -33,6 +32,10 @@
 
 <!-- ERRORS ====================================================================-->
 {% include 'includes/errors.html' %}
+<!--============================================================================-->
+
+<!-- BREADCRUMB ================================================================-->
+{% include 'includes/breadcrumb.html' %}
 <!--============================================================================-->
 
 {% block content %}{% endblock %}

@@ -1,0 +1,8 @@
+{% extends "adminEnviron/index.html" %}
+{% block inner_content %}
+<h2>
+{% for instancia in instancias %}
+<span class="label label-default">{{ instancia }}</span>
+{% endfor %}
+</h2>
+{% endblock %}

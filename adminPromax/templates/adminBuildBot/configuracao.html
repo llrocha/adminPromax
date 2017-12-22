@@ -5,7 +5,6 @@
       margin-top: 16px;
   }
 </style>
-<h1>Configura&ccedil;&atilde;o</h1>
 <!--
 <a href="start" class="btn btn-labeled btn-success" role="button">
   <span class="btn-label"><i class="glyphicon glyphicon-ok"></i></span>
@@ -43,21 +42,28 @@
 
 <br>
 -->
-<div class="dropdown">
-  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-    Arquivo
-    <span class="caret"></span>
-  </button>
-  <ul class="dropdown-menu" aria-labelledby="dropdownMenu">
-  {% for file in config_files %}
-    <li><a href="/buildbot/configuracao/{{ file }}/">{{ file }}</a></li>
-  {% endfor %}
-  </ul>
+<div class="card">
+  <div class="card-body">
+    <div class="dropdown">
+        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Arquivo
+        </button>
+          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            {% for file in config_files %}
+            <a class="dropdown-item" href="/buildbot/configuracao/{{ file }}/">{{ file }}</a>
+            {% endfor %}
+          </div>
+      </div>
+  </div>
 </div>
 
 <style>
   {{ file_css|safe }}
 </style>
+<div class="card">
+  <div class="card-body">
 {{ file_content|safe }}
+  </div>
+</div>
 
 {% endblock %}

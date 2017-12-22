@@ -1,4 +1,5 @@
 from cryptography.fernet import Fernet
+import datetime
 import logging
 import socket
 import sys
@@ -26,7 +27,8 @@ logger.addHandler(handler)
 #logger.error('error - I told you so')  # will not print anything
 #logger.critical('critical - Watch out!')  # will print a message to the console
 
-
+def LogMsg(self, msg):
+    print('[{0}] - {1}'.format(datetime.now(), msg))
 
 def ExecuteRemoteCommand(host, port, command):
     
@@ -57,7 +59,8 @@ def ExecuteRemoteCommand(host, port, command):
         
         logger.debug("Received: {}".format(response))
     except Exception as e:
-        response = "Attribute Error({0}): {1}".format(e.errno, e.strerror)
+        #response = "Unexpected Error({0})".format(e)
+        raise
 
     return response
 
