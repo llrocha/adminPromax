@@ -28,12 +28,12 @@
           {% endif %}
             <a class="nav-link dropdown-toggle" href="/apache/" id="dropdownApache" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Apache</a>
             <div class="dropdown-menu" aria-labelledby="dropdownApache">
-                <a class="dropdown-item" href="/apache/status/">Status</a>
-                <a class="dropdown-item" href="/apache/configuracao/">Configuração</a>
-                <a class="dropdown-item" href="/apache/logs/">Logs</a>
+              <a class="dropdown-item" href="/apache/configuracao/">Configuração</a>
+              <a class="dropdown-item" href="/apache/status/">Status</a>
+              <a class="dropdown-item" href="/apache/logs/">Logs</a>
                 <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="/apache/start/">Iniciar</a>
-                <a class="dropdown-item" href="/apache/stop/">Parar</a>
+                <a class="dropdown-item" href="/apache/controle/start/">Iniciar</a>
+                <a class="dropdown-item" href="/apache/controle/stop/">Parar</a>
               </div>
             </li>
             
@@ -55,8 +55,8 @@
           {% else %}
           <li class="nav-item dropdown">
           {% endif %}
-            <a class="nav-link dropdown-toggle" href="/buildbot/" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Buildbot</a>
-            <div class="dropdown-menu" aria-labelledby="dropdown01">
+            <a class="nav-link dropdown-toggle" href="/buildbot/" id="dropdownBuildbot" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Buildbot</a>
+            <div class="dropdown-menu" aria-labelledby="dropdownBuildbot">
               <a class="dropdown-item" href="/buildbot/configuracao/">Configuração</a>
               <a class="dropdown-item" href="/buildbot/controle/">Controle</a>
               <a class="dropdown-item" href="/buildbot/logs/master/">Logs</a>

@@ -6,11 +6,7 @@
   }
 </style>
 
-<ul class="nav nav-tabs">
-  <li role="presentation" class="{{master}}"><a href="/buildbot/logs/master/">Master</a></li>
-  <li role="presentation" class="{{worker}}"><a href="/buildbot/logs/worker/">Worker</a></li>
-</ul>
-<br>
+
 <!--
 <div class="dropdown">
   <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
@@ -23,7 +19,12 @@
   {% endfor %}
   </ul>
 </div>
--->
+##
+<ul class="nav nav-tabs">
+  <li role="presentation" class="{{master}}"><a href="/buildbot/logs/master/">Master</a></li>
+  <li role="presentation" class="{{worker}}"><a href="/buildbot/logs/worker/">Worker</a></li>
+</ul>
+<br>
 <div class="card">
   <div class="card-body">
     <div class="dropdown">
@@ -46,6 +47,35 @@
           </code>
       </pre>
     </div>
+</div>
+-->
+
+<div class="card">
+  <div class="card-header">
+    <ul class="nav nav-tabs card-header-tabs">
+      <li class="nav-item">
+        <a class="nav-link {{master}}" href="/buildbot/logs/master/">Master</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link {{worker}}" href="/buildbot/logs/worker/">Worker</a>
+      </li>
+    </ul>
+  </div>
+  <div class="card-body">
+    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      Arquivo
+    </button>
+    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+      {% for file in config_files %}
+      <a class="dropdown-item" href="/buildbot/logs/{{ instance }}/{{ file }}/">{{ file }}</a>
+      {% endfor %}
+    </div>
+    <pre>
+      <code>
+{{ file_content }}
+      </code>
+  </pre>
+  </div>
 </div>
 
 {% endblock %}
