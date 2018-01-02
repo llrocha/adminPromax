@@ -1,5 +1,5 @@
 {% for error in errors %}
-<div class="container">  
+<div class="container-fluid">  
     <div class="alert alert-{{error.type}}" role="alert">
         <strong>{{error.title}}</strong> {{error.message|safe}}
     </div>    

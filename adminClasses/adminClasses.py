@@ -9,6 +9,8 @@ class BaseView:
     def context(self):
         url = self.request.META['PATH_INFO']
         breadcrumb = url.strip('/').split('/')
+        while(breadcrumb.count('') > 0):
+            breadcrumb.remove('')
         context = {'breadcrumb': breadcrumb}
 
         return context

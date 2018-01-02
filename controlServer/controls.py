@@ -26,7 +26,7 @@ class BaseControls():
             return ' '.join(self.geos)
 
     def instances(self):
-        geo = None
+        geo = ''
 
         for dir in os.listdir('/'):
             if(re.match('^[a-z][a-z0-9]$', dir)):
@@ -301,7 +301,7 @@ class ServerControls():
         #super(self.__class__, self).__init__(geo)
         self.geo = geo
         self.classes = [
-            #'BaseControls',
+            'BaseControls',
             'ApacheControls',
             'DataBaseControls',
             'BuildBotControls',
