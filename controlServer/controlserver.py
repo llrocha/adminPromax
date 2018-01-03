@@ -13,7 +13,7 @@ class ControlServerTCPHandler(socketserver.BaseRequestHandler):
     #cryptography
     key = b'Z7KxlRurgMcxBt7F54zteD2mHVkOrZdF2ycz7eMvIII='
     fernet_key = Fernet(key)
-    sc = controls.ServerControls('h1')
+    sc = controls.ServerControls()
 
     #def __init__(self, request, client_address, server):
     #    super(self.__class__, self).__init__(request, client_address, server)
@@ -34,13 +34,14 @@ class ControlServerTCPHandler(socketserver.BaseRequestHandler):
 
         class_name = command[0]
         method_name = command[1]
-        params = command[2:]
+        geo = command[2]
+        params = command[3:]
 
-        log = '{0} wrote: class.method={1}.{2}({3})'.format(client_address, class_name, method_name, ', '.join(params))
+        log = '{0} wrote: class[{4}].method={1}.{2}({3})'.format(client_address, class_name, method_name, ', '.join(params), geo)
         self.LogMsg(log)
 
         try:
-            obj = self.sc.factory[class_name]
+            obj = self.sc.factory[geo][class_name]
             method = getattr(obj, method_name)
             data = method(*params)
             if(type(data) is str):

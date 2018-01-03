@@ -12,11 +12,11 @@
           {% else %}
           <li class="nav-item dropdown">
           {% endif %}
-            <a class="nav-link dropdown-toggle" href="/ambiente/" id="ddenviron" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Ambiente</a>
+            <a class="nav-link dropdown-toggle" href="/ambiente/{{geo}}/" id="ddenviron" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Ambiente</a>
             <div class="dropdown-menu" aria-labelledby="ddenviron">
-              <a class="dropdown-item" href="/ambiente/instancias/">Instâncias</a>
-              <a class="dropdown-item" href="/ambiente/visualizacao/">Visualização</a>
-              <a class="dropdown-item" href="/ambiente/construcao/">Construção</a>
+              <a class="dropdown-item" href="/ambiente/instancias/{{geo}}/">Instâncias</a>
+              <a class="dropdown-item" href="/ambiente/visualizacao/{{geo}}/">Visualização</a>
+              <a class="dropdown-item" href="/ambiente/construcao/{{geo}}/">Construção</a>
               <a class="dropdown-item" href="/ambiente/monitoramento/">Monitoramento</a>
             </div>
           </li>

@@ -1,45 +1,27 @@
 import os
 import re
 import sh
+import glob
 import subprocess
 from buildbot.config import GitInfo, BuildBotInfo
 
 
 class BaseControls():
-    active = ''
-    geos = []
-    
-    def __init__(self, geo):
-        if(len(geo) == 0):
-            self.geos = os.popen('ls -d /[a-z][a-z0-9]/ 2>/dev/null').readlines()
-            self.geos = [ x.strip('\n').strip('/') for x in self.geos ]
-            if(len(geos) > 0):
-                self.active = geos[0]
-        else:
-            self.geos.append(geo)
-            self.active = geo
 
-    def status(self):
-        if (len(self.geos) == 0):
-            return 'Sem geografias disponíveis!'
-        else:
-            return ' '.join(self.geos)
+    def __init__(self, geo):
+        self.geo = geo
 
     def instances(self):
-        geo = ''
 
-        for dir in os.listdir('/'):
-            if(re.match('^[a-z][a-z0-9]$', dir)):
-                if(geo):
-                    geo = geo + ';' + dir
-                else:
-                    geo = dir
+        self.geos = glob.glob('/[a-z][a-z0-9]/')
+        self.geos = [ x.strip('/') for x in self.geos ]
+        self.geos = ';'.join(self.geos)
 
-        return geo    
+        return self.geos
 
 
 class ApacheControls(BaseControls):
-    def __init__(self, geo = ''):
+    def __init__(self, geo):
         super(self.__class__, self).__init__(geo)
 
     def status(self):
@@ -53,18 +35,18 @@ class ApacheControls(BaseControls):
         return r
 
     def start(self):
-        command = '/amb/boot/S80_httpd_promax_{0}'.format(self.active)
+        command = '/amb/boot/S80_httpd_promax_{0}'.format(self.geo)
         return subprocess.check_output([command])
 
     def stop(self):
-        command = '/amb/boot/K80_httpd_promax_{0}'.format(self.active)
+        command = '/amb/boot/K80_httpd_promax_{0}'.format(self.geo)
         return subprocess.check_output([command])
 
     def config_files(self):
         mask = '.*\.conf'
         files = ''
         try:
-            dir = '/{0}/etc/apache/promax/'.format(self.active)
+            dir = '/{0}/etc/apache/promax/'.format(self.geo)
             for config_file in os.listdir(dir):
                 if(re.match(mask, config_file)):
                     if(files):
@@ -77,7 +59,7 @@ class ApacheControls(BaseControls):
         return files
 
     def configfile_content(self, file):
-        config_file = '/{0}/etc/apache/promax/{1}'.format(self.active, file.replace('%', '.'))
+        config_file = '/{0}/etc/apache/promax/{1}'.format(self.geo, file.replace('%', '.'))
         if(os.path.isfile(config_file)):
             return subprocess.check_output(['cat', config_file])
         else:
@@ -86,7 +68,7 @@ class ApacheControls(BaseControls):
     def log_files(self):
         files = ''
         try:
-            dir = '/{0}/promax/log/httpd/'.format(self.active)
+            dir = '/{0}/promax/log/httpd/'.format(self.geo)
             for log_file in os.listdir(dir):
                 if(files):
                     files = files + ';' + log_file
@@ -98,7 +80,7 @@ class ApacheControls(BaseControls):
         return files
 
     def logfile_content(self, file):
-        log_file = '/{0}/promax/log/httpd/{1}'.format(self.active, file.replace('%', '.'))
+        log_file = '/{0}/promax/log/httpd/{1}'.format(self.geo, file.replace('%', '.'))
         if(os.path.isfile(log_file)):
             return subprocess.check_output(['cat', log_file])
         else:
@@ -197,7 +179,7 @@ class BuildBotControls(BaseControls):
         mask = '.*\.cfg'
         files = ''
         try:
-            dir = '/buildbot/buildbot/'.format(self.active)
+            dir = '/buildbot/buildbot/'.format(self.geo)
             for config_file in os.listdir(dir):
                 if(re.match(mask, config_file)):
                     if(files):
@@ -260,7 +242,7 @@ class EnvironControls(BaseControls):
         return subprocess.check_output(['egrep', '"Mem|Cache|Swap"', '/proc/meminfo'])
 
     def environment_tree(self):
-        root = '/' + self.active
+        root = '/' + self.geo
         return subprocess.check_output(['find', root, '-type', 'd'])
 
     def list_dir(self, dir = ''):
@@ -296,10 +278,12 @@ class JobsControls(BaseControls):
 class ServerControls():
     """
     """
-
-    def __init__(self, geo):
+    def __init__(self):
         #super(self.__class__, self).__init__(geo)
-        self.geo = geo
+
+        self.geos = glob.glob('/[a-z][a-z0-9]/')
+        self.geos = [ x.strip('/') for x in self.geos ]
+        
         self.classes = [
             'BaseControls',
             'ApacheControls',
@@ -308,11 +292,15 @@ class ServerControls():
             'EnvironControls',
             'JobsControls',
         ]
+
         self.factory = {}
-        for class_name in self.classes:
-            klass = globals()[class_name]
-            obj = klass(self.geo)
-            self.factory[class_name] = obj
+        for geo in self.geos:
+            geo_factory = {}
+            for class_name in self.classes:
+                klass = globals()[class_name]
+                obj = klass(geo)
+                geo_factory[class_name] = obj
+            self.factory[geo] = geo_factory
 
     def register_class(self, class_name):
         klass = globals()[class_name]

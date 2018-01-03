@@ -57,7 +57,7 @@ def instancias(request):
     """Renders the 'instancias' page."""
     assert isinstance(request, HttpRequest)
 
-    instancias = ExecuteRemoteCommand('90.0.2.174', 9999, 'ApacheControls->instances')
+    instancias = ExecuteRemoteCommand('90.0.2.174', 9999, 'ApacheControls->instances->h1')
     instancias = instancias.split(';')
 
     context = BaseView(request).context()
@@ -102,11 +102,19 @@ def create_tree(d, l):
     return r
 
 
-def show_tree(request):
+def show_tree(request, geo = ''):
     """Renders the 'controle' page."""
     assert isinstance(request, HttpRequest)
+
+    context = BaseView(request).context()
+    geografia = context['geo']
+    if(len(geo) > 0):
+        geografia = geo.strip('/')
+    server = context['server']
+    port = int(context['port'])
     
-    path_list = ExecuteRemoteCommand('90.0.2.174', 9999, 'EnvironControls->environment_tree')
+    command = 'EnvironControls->environment_tree->{0}'.format(geografia)
+    path_list = ExecuteRemoteCommand(server, port, command)
     
     tree = {}    
     for path in path_list.split():
@@ -116,7 +124,6 @@ def show_tree(request):
     
     html_tree = create_tree(tree, 0)
 
-    context = BaseView(request).context()
     context.update({
             'menu':'adminEnviron/construcao',
             'appname':'adminPromax',
@@ -133,7 +140,7 @@ def show_tree(request):
     )
 
 
-def visualizacao(request, dir = ''):
+def visualizacao(request, geo, dir = ''):
     icons = {
         '*': ['default.png', '[   ]'],
         '7z': ['archive.png', '[   ]'],
@@ -272,7 +279,15 @@ def visualizacao(request, dir = ''):
     if(dir.find('->') > 0):
         dir = dir.split()[0]
 
-    result = ExecuteRemoteCommand('90.0.2.174', 9999, 'EnvironControls->list_dir->' + dir)
+    context = BaseView(request).context()
+    geografia = context['geo']
+    if(len(geo) > 0):
+        geografia = geo.strip('/')
+    server = context['server']
+    port = int(context['port'])
+
+    command = 'EnvironControls->list_dir->{0}->{1}'.format(geografia, dir)
+    result = ExecuteRemoteCommand(server, port, command)
     result = result.split('\n')
     files = []
     for line in result:
@@ -304,7 +319,6 @@ def visualizacao(request, dir = ''):
     if(len(path) == 0):
         path = dir.strip('/')
 
-    context = BaseView(request).context()
     context.update({
             'menu':'adminEnviron/visualizacao',
             'appname':'adminPromax',

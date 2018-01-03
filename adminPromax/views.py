@@ -12,10 +12,14 @@ def index(request):
     """Renders the 'index' page."""
     assert isinstance(request, HttpRequest)
 
-    instancias = ExecuteRemoteCommand('90.0.2.174', 9999, 'BaseControls->instances')
-    instancias = instancias.split(';')
-
     context = BaseView(request).context()
+
+    geo = context['geo']
+    server = context['server']
+
+    instancias = ExecuteRemoteCommand(server, 9999, 'BaseControls->instances->' + geo)
+    instancias = instancias.split(';')
+    
     context.update({
             'menu':'adminPromax',
             'appname':'adminPromax',

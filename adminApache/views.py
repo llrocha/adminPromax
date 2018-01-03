@@ -42,18 +42,22 @@ def configuracao(request, file = ''):
     """Renders the 'configuracao' page."""
     assert isinstance(request, HttpRequest)
 
-    config_files = ExecuteRemoteCommand('90.0.2.174', 9999, 'ApacheControls->config_files')
+    context = BaseView(request).context()
+
+    geo = context['geo']
+    server = context['server']
+
+    config_files = ExecuteRemoteCommand(server, 9999, 'ApacheControls->config_files->' + geo)
     config_files = config_files.split(';')
     config_files.reverse()
     if(file):
-        file_content = ExecuteRemoteCommand('90.0.2.174', 9999, 'ApacheControls->configfile_content->' + file)
+        file_content = ExecuteRemoteCommand(server, 9999, 'ApacheControls->configfile_content->' + geo + '->' + file)
         file_content = highlight(file_content, ApacheConfLexer(), HtmlFormatter())
         file_css = HtmlFormatter().get_style_defs('.highlight')
     else:
         file_content = ''
         file_css = ''
 
-    context = BaseView(request).context()
     context.update({
             'menu':'adminApache/configuracao',
             'appname':'adminPromax',
@@ -77,18 +81,22 @@ def logs(request, file = ''):
     """Renders the 'configuracao' page."""
     assert isinstance(request, HttpRequest)
 
-    config_files = ExecuteRemoteCommand('90.0.2.174', 9999, 'ApacheControls->log_files')
+    context = BaseView(request).context()
+
+    geo = context['geo']
+    server = context['server']
+
+    config_files = ExecuteRemoteCommand(server, 9999, 'ApacheControls->log_files->' + geo)
     config_files = config_files.split(';')
     config_files.reverse()
     if(file):
-        file_content = ExecuteRemoteCommand('90.0.2.174', 9999, 'ApacheControls->logfile_content->' + file)
+        file_content = ExecuteRemoteCommand(server, 9999, 'ApacheControls->logfile_content->' + geo + '->' + file)
         #file_content = highlight(file_content, ApacheConfLexer(), HtmlFormatter())
         #file_css = HtmlFormatter().get_style_defs('.highlight')
     else:
         file_content = ''
         file_css = ''
 
-    context = BaseView(request).context()
     context.update({
             'menu':'adminApache/logs',
             'appname':'adminPromax',
@@ -111,10 +119,14 @@ def controle(request, command = ''):
     """Renders the 'controle' page."""
     assert isinstance(request, HttpRequest)
 
-    if(command):
-        config_files = ExecuteRemoteCommand('90.0.2.174', 9999, 'ApacheControls->' + command)
-
     context = BaseView(request).context()
+
+    geo = context['geo']
+    server = context['server']
+
+    if(command):
+        config_files = ExecuteRemoteCommand(server, 9999, 'ApacheControls->' + geo + '->' + command)
+    
     context.update({
             'menu':'adminApache/controle',
             'appname':'adminPromax',
@@ -135,9 +147,13 @@ def status(request):
     """Renders the 'status' page."""
     assert isinstance(request, HttpRequest)
 
-    status = ExecuteRemoteCommand('90.0.2.174', 9999, 'ApacheControls->status')
-
     context = BaseView(request).context()
+
+    geo = context['geo']
+    server = context['server']
+
+    status = ExecuteRemoteCommand(server, 9999, 'ApacheControls->status->' + geo)
+
     context.update({
             'menu':'adminApache/status',
             'appname':'adminPromax',
