@@ -35,6 +35,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'adminConfig.apps.AdminPromaxConfig',
     'adminApache',
     'adminBases',
     'adminBuildBot',
