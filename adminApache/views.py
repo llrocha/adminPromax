@@ -125,7 +125,7 @@ def controle(request, command = ''):
     server = context['server']
 
     if(command):
-        config_files = ExecuteRemoteCommand(server, 9999, 'ApacheControls->' + geo + '->' + command)
+        config_files = ExecuteRemoteCommand(server, 9999, 'ApacheControls->' + command + '->' + geo)
     
     context.update({
             'menu':'adminApache/controle',
