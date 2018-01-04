@@ -36,11 +36,11 @@ class ApacheControls(BaseControls):
 
     def start(self):
         command = '/amb/boot/S80_httpd_promax_{0}'.format(self.geo)
-        return subprocess.check_output([command])
+        return os.popen(command).readlines()
 
     def stop(self):
         command = '/amb/boot/K80_httpd_promax_{0}'.format(self.geo)
-        return subprocess.check_output([command])
+        return os.popen(command).readlines()
 
     def config_files(self):
         mask = '.*\.conf'
@@ -100,7 +100,7 @@ class BuildBotControls(BaseControls):
 
     def status(self):
         #return str(sh.grep(sh.ps('-ef'), 'buildbot'))
-        result = os.popen('ps -ef|grep -v grep|grep buildbot').readlines()        
+        result = os.popen('ps -ef|grep -v grep|grep buildbot').readlines()
         if (len(result) == 0):
            result = 'Serviço inativo!'
            return result
@@ -194,7 +194,8 @@ class BuildBotControls(BaseControls):
     def configfile_content(self, file):
         config_file = '/buildbot/buildbot/{0}'.format(file.replace('%', '.'))
         if(os.path.isfile(config_file)):
-            return subprocess.check_output(['cat', config_file])
+            command = 'cat ' + config_file
+            return os.popen(command).readlines()
         else:
             return 'This file does not exists! [{0}]'.format(config_file)
 
@@ -217,13 +218,15 @@ class BuildBotControls(BaseControls):
     def logfile_content(self, instance='master', file='twistd.log'):
         log_file = '/buildbot/bb-{0}/{0}/{1}'.format(instance, file.replace('%', '.'))
         if(os.path.isfile(log_file)):
-            return subprocess.check_output(['cat', log_file])
+            command = 'cat' + log_file
+            return os.popen(command).readlines()
         else:
             return 'This file does not exists! [{0}]'.format(log_file)
 
     def list_branches(self):
         dir = '/buildbot/gitpoller-workdir/2A/'
         os.chdir(dir)
+        result = str(sh.git('branch', '-r'))
         result = str(sh.git('branch', '-r'))
         return result.replace('\n', ';').replace(' ', '')
 
@@ -233,17 +236,21 @@ class EnvironControls(BaseControls):
         super(self.__class__, self).__init__(geo)
 
     def environ(self):
-        return subprocess.check_output(['set'])
+        command = 'set'
+        return os.popen(command).readlines()
 
     def diskusage(self):
-        return subprocess.check_output(['df', '-h'])
+        command = 'df -h'
+        return os.popen(command).readlines()
 
     def memory(self):
-        return subprocess.check_output(['egrep', '"Mem|Cache|Swap"', '/proc/meminfo'])
+        command = 'egrep "Mem|Cache|Swap" /proc/meminfo'
+        return os.popen(command).readlines()
 
     def environment_tree(self):
         root = '/' + self.geo
-        return subprocess.check_output(['find', root, '-type', 'd'])
+        command = 'find ' + root + ' -type d'
+        return os.popen(command).readlines()
 
     def list_dir(self, dir = ''):
         if(len(dir) == 0):
@@ -252,7 +259,8 @@ class EnvironControls(BaseControls):
             dir = '/' + dir
         if(os.path.isdir(dir)):
             try:
-                result = sh.grep(sh.ls(dir, '-l'), '-v', "^total").stdout
+                command = 'ls -l|grep -v "^total"'
+                result = os.popen(command).readlines()
             except Exception as e:
                 result = 'Erro ao listar diretório!'
         else:
@@ -294,7 +302,7 @@ class ServerControls():
         ]
 
         self.factory = {}
-        for geo in self.geos:
+        for geo in self.geos: 
             geo_factory = {}
             for class_name in self.classes:
                 klass = globals()[class_name]
