@@ -27,7 +27,7 @@ class ApacheControls(BaseControls):
     def status(self):
         r = ''
         command = 'ps -ef'
-        ps = os.popen(command).readlines()
+        ps = os.popen(command).read()
         for item in ps:
             if(re.search('httpd', item)):
                 r += (item + '\n')
@@ -37,11 +37,11 @@ class ApacheControls(BaseControls):
 
     def start(self):
         command = '/amb/boot/S80_httpd_promax_{0}'.format(self.geo)
-        return os.popen(command).readlines()
+        return os.popen(command).read()
 
     def stop(self):
         command = '/amb/boot/K80_httpd_promax_{0}'.format(self.geo)
-        return os.popen(command).readlines()
+        return os.popen(command).read()
 
     def config_files(self):
         mask = '.*\.conf'
@@ -62,7 +62,8 @@ class ApacheControls(BaseControls):
     def configfile_content(self, file):
         config_file = '/{0}/etc/apache/promax/{1}'.format(self.geo, file.replace('%', '.'))
         if(os.path.isfile(config_file)):
-            return subprocess.check_output(['cat', config_file])
+            command = 'cat {0}'.format(config_file)
+            return os.popen(command).read()
         else:
             return 'This file does not exists! [{0}]'.format(config_file)
 
@@ -83,7 +84,8 @@ class ApacheControls(BaseControls):
     def logfile_content(self, file):
         log_file = '/{0}/promax/log/httpd/{1}'.format(self.geo, file.replace('%', '.'))
         if(os.path.isfile(log_file)):
-            return subprocess.check_output(['cat', log_file])
+            command = 'cat {0}'.format(log_file)
+            return os.popen(command).read()
         else:
             return 'This file does not exists! [{0}]'.format(log_file)
 
@@ -100,13 +102,12 @@ class BuildBotControls(BaseControls):
         super(self.__class__, self).__init__(geo)
 
     def status(self):
-        #return str(sh.grep(sh.ps('-ef'), 'buildbot'))
-        result = os.popen('ps -ef|grep -v grep|grep buildbot').readlines()
+        result = os.popen('ps -ef|grep -v grep|grep buildbot').read()
         if (len(result) == 0):
            result = 'Serviço inativo!'
            return result
         
-        return result[0]
+        return result
 
     def stop(self):
         master = self.stopmaster()
@@ -137,8 +138,7 @@ class BuildBotControls(BaseControls):
         return result
                         
     def startmaster(self):
-        #return subprocess.check_output(['/buildbot/buildbot/buildbot.promax.master.sh', '-s'])
-        result = os.popen('/buildbot/buildbot/buildbot.promax.master.sh -s >/dev/null 2>&1;echo $?').readlines()
+        result = os.popen('/buildbot/buildbot/buildbot.promax.master.sh -s >/dev/null 2>&1;echo $?').read()
         try:
             result = int(result[0])
         except ValueError:
@@ -147,8 +147,7 @@ class BuildBotControls(BaseControls):
         return not bool(result)
 
     def startworker(self):
-        #return subprocess.check_output(['/buildbot/buildbot/buildbot.promax.worker.sh', '-s'])        
-        result = os.popen('/buildbot/buildbot/buildbot.promax.worker.sh -s >/dev/null 2>&1;echo $?').readlines()
+        result = os.popen('/buildbot/buildbot/buildbot.promax.worker.sh -s >/dev/null 2>&1;echo $?').read()
         try:
             result = int(result[0])
         except ValueError:
@@ -157,8 +156,7 @@ class BuildBotControls(BaseControls):
         return not bool(result)
 
     def stopmaster(self):
-        #return subprocess.check_output(['/buildbot/buildbot/buildbot.promax.master.sh', '-k'])
-        result = os.popen('/buildbot/buildbot/buildbot.promax.master.sh -k >/dev/null 2>&1;echo $?').readlines()
+        result = os.popen('/buildbot/buildbot/buildbot.promax.master.sh -k >/dev/null 2>&1;echo $?').read()
         try:
             result = int(result[0])
         except ValueError:
@@ -167,8 +165,7 @@ class BuildBotControls(BaseControls):
         return not bool(result)
 
     def stopworker(self):
-        #return subprocess.check_output(['/buildbot/buildbot/buildbot.promax.worker.sh', '-k'])
-        result = os.popen('/buildbot/buildbot/buildbot.promax.worker.sh -k >/dev/null 2>&1;echo $?').readlines()
+        result = os.popen('/buildbot/buildbot/buildbot.promax.worker.sh -k >/dev/null 2>&1;echo $?').read()
         try:
             result = int(result[0])
         except ValueError:
@@ -196,7 +193,7 @@ class BuildBotControls(BaseControls):
         config_file = '/buildbot/buildbot/{0}'.format(file.replace('%', '.'))
         if(os.path.isfile(config_file)):
             command = 'cat ' + config_file
-            return os.popen(command).readlines()
+            return os.popen(command).read()
         else:
             return 'This file does not exists! [{0}]'.format(config_file)
 
@@ -220,7 +217,7 @@ class BuildBotControls(BaseControls):
         log_file = '/buildbot/bb-{0}/{0}/{1}'.format(instance, file.replace('%', '.'))
         if(os.path.isfile(log_file)):
             command = 'cat' + log_file
-            return os.popen(command).readlines()
+            return os.popen(command).read()
         else:
             return 'This file does not exists! [{0}]'.format(log_file)
 
@@ -238,20 +235,20 @@ class EnvironControls(BaseControls):
 
     def environ(self):
         command = 'set'
-        return os.popen(command).readlines()
+        return os.popen(command).read()
 
     def diskusage(self):
         command = 'df -h'
-        return os.popen(command).readlines()
+        return os.popen(command).read()
 
     def memory(self):
         command = 'egrep "Mem|Cache|Swap" /proc/meminfo'
-        return os.popen(command).readlines()
+        return os.popen(command).read()
 
     def environment_tree(self):
         root = '/' + self.geo
         command = 'find ' + root + ' -type d'
-        return os.popen(command).readlines()
+        return os.popen(command).read()
 
     def list_dir(self, dir = ''):
         if(len(dir) == 0):
@@ -261,7 +258,7 @@ class EnvironControls(BaseControls):
         if(os.path.isdir(dir)):
             try:
                 command = 'ls -l|grep -v "^total"'
-                result = os.popen(command).readlines()
+                result = os.popen(command).read()
             except Exception as e:
                 result = 'Erro ao listar diretório!'
         else:
