@@ -26,8 +26,9 @@ class ApacheControls(BaseControls):
 
     def status(self):
         r = ''
-        ps = sh.ps('-ef')
-        for item in ps.split('\n'):
+        command = 'ps -ef'
+        ps = os.popen(command).readlines()
+        for item in ps:
             if(re.search('httpd', item)):
                 r += (item + '\n')
         if(len(r) == 0):
