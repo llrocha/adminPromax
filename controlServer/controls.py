@@ -252,12 +252,11 @@ class EnvironControls(BaseControls):
 
     def list_dir(self, dir = ''):
         if(len(dir) == 0):
-            dir = 'h1'
-        if(dir[0] != '/'):
-            dir = '/' + dir
+            dir = '/{0}/'.format(self.geo)
+
         if(os.path.isdir(dir)):
             try:
-                command = 'ls -l|grep -v "^total"'
+                command = 'ls -l {0}|grep -v "^total"'.format(dir)
                 result = os.popen(command).read()
             except Exception as e:
                 result = 'Erro ao listar diretório!'
@@ -266,6 +265,9 @@ class EnvironControls(BaseControls):
 
         return result
 
+    def build_promax(self, path = ''):
+        command = '{0}/criar_geo.sh {1} {0} 2>&1'.format(path, self.geo)
+        return os.popen(command).read()
 
 class JobsControls(BaseControls):
     def __init__(self, geo = ''):
