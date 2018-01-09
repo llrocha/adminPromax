@@ -1,0 +1,11 @@
+{% extends "adminEnviron/index.html" %}
+{% block inner_content %}
+{% if result %}
+<pre>
+{{ result }}
+</pre>
+<h1>Finalizado a criação do ambiente!</h1>
+{% else %}
+<h2>Nothing to do.</h2>
+{% endif %}
+{% endblock %}

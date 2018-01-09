@@ -273,8 +273,8 @@ def visualizacao(request, geo, dir = ''):
     
     assert isinstance(request, HttpRequest)
 
-    if(dir.find('/h1/') < 0):
-        dir = '/h1/' + dir
+    if(len(dir) == 0):
+        dir = '/{0}/'.format(geo)
 
     if(dir.find('->') > 0):
         dir = dir.split()[0]
@@ -332,5 +332,33 @@ def visualizacao(request, geo, dir = ''):
     return render(
         request,
         'adminEnviron/visualizacao.html',
+        context
+    )
+
+
+def build_promax(request, geo, dir = ''):
+    context = BaseView(request).context()
+    geografia = context['geo']
+    if(len(geo) > 0):
+        geografia = geo.strip('/')
+    server = context['server']
+    port = int(context['port'])
+    build_promax_path = context['build_promax_path']
+
+    command = 'EnvironControls->build_promax->{0}->{1}'.format(geografia, build_promax_path)
+    result = ExecuteRemoteCommand(server, port, command)
+
+    context.update({
+            'menu':'adminEnviron/visualizacao',
+            'appname':'adminPromax',
+            'title':'adminEnviron/Index',
+            'year':datetime.now().year,
+            'request':request,
+            'result': result
+        })
+
+    return render(
+        request,
+        'adminEnviron/construcao.html',
         context
     )

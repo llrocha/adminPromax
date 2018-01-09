@@ -5,7 +5,7 @@ from . import views
 app_name = 'adminEnviron'
 urlpatterns = [
     url(r'^$', views.index, name='index'),
-    url(r'construcao/(?P<geo>.*)$', views.show_tree, name='show_tree'),
+    url(r'construcao/(?P<geo>.*)$', views.build_promax, name='build_promax'),
     url(r'instancias/(?P<geo>.*)$', views.instancias, name='instancias'),
     url(r'visualizacao/(?P<geo>.*)/(?P<dir>.*)$', views.visualizacao, name='visualizacao'),
     url(r'monitoramento/$', views.monitoramento, name='monitoramento'),
