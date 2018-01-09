@@ -5,6 +5,7 @@
     Theme name: Apaxy
     Theme author: @adamwhitcroft
 \*------------------------------------*/
+@import url('//fonts.googleapis.com/css?family=Consolas');
 @import url('//fonts.googleapis.com/css?family=Open+Sans');
 /* Have to use @import for the font, as you can only specify a single stylesheet */
 * {
@@ -22,7 +23,7 @@ html {
 	color:#61666c;
 	font-weight:400;
 	font-size:1em;
-	font-family:'Open Sans', sans-serif;
+	font-family:'Consolas', 'Open Sans', sans-serif;
 	line-height:2em;
 }
 /*
@@ -51,7 +52,7 @@ a:hover {
 .wrapper {
 	margin:0 auto;
 	padding-top:20px;
-	max-width:80%;
+	/* max-width:80%; */
 }
 /*------------------------------------*\
     Demo block
@@ -68,7 +69,7 @@ a:hover {
 table {
 	width:100%;
 	border-collapse:collapse;
-	font-size:.875em;
+	font-size:.800em;
 }
 tr {
 	outline:0;
@@ -84,7 +85,7 @@ th {
 }
 /* 2nd Column: Filename */
 th + th {
-	width:50%;
+	width:56%;
 }
 /* 3rd Column: Permissions */
 th + th + th {
@@ -133,12 +134,3 @@ tr.parent a[href^="/"] {
 	.parent a[href^="/"]:hover {
 		color:#2281d0;
 	}
-/*------------------------------------*\
-    Footer
-\*------------------------------------*/
-/*
-.footer {
-	text-align:center;
-	font-size:.75em;
-}
-*/

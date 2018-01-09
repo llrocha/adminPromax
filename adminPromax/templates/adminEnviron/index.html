@@ -1,49 +1,9 @@
 {% extends "base.html" %}
 {% block content %}
-<!--
-<style>
-    .col {
-        padding: 8px;
-        border: 2px solid darkgray;
-    }
-    .row {
-        margin-top: 16px;
-    }
-</style>
--->
-<div class="container-fluid">
-<!--
-    <div class="row">
-        <div class="col-md-2">
-            {% if 'construcao' in menu %}
-            <a class="btn btn-primary btn-xs btn-block" role="button" href="/environ/construcao/">Constru&ccedil;&atilde;o</a>
-            {% else %}
-            <a class="btn btn-default btn-xs btn-block" role="button" href="/environ/construcao/">Constru&ccedil;&atilde;o</a>
-            {% endif %}
-        </div>
-        <div class="col-md-2">
-            {% if 'visualizacao' in menu %}
-            <a class="btn btn-primary btn-xs btn-block" role="button" href="/environ/visualizacao/{{geo}}/">Visualiza&ccedil;&atilde;o</a>
-            {% else %}
-            <a class="btn btn-default btn-xs btn-block" role="button" href="/environ/visualizacao/{{geo}}/">Visualiza&ccedil;&atilde;o</a>
-            {% endif %}
-        </div>
-        <div class="col-md-2">
-            {% if 'monitoramento' in menu %}
-            <a class="btn btn-primary btn-xs btn-block" role="button" href="/environ/monitoramento/{{geo}}/">Monitoramento</a>
-            {% else %}
-            <a class="btn btn-default btn-xs btn-block" role="button" href="/environ/monitoramento/{{geo}}/">Monitoramento</a>
-            {% endif %}
-        </div>
-        <div class="col-md-6">
-        </div>
-    </div>
--->
-    <div class="row">
-        <div class="col-md-12">
-{% block inner_content %}{% endblock %}
-        </div>
-    </div>
 
+<div class="container-fluid">
+    
+{% block inner_content %}{% endblock %}
+   
 </div>
 {% endblock %}
