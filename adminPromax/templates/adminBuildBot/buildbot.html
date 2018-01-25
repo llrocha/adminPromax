@@ -1,8 +1,16 @@
 {% extends "adminBuildBot/index.html" %}
 {% block inner_content %}
+<!--
 <div class="row">
     <div class="col-md-12">
         <iframe width=100% height=800 src="http://90.0.2.174:8010/"></iframe>
+    </div>
+</div>
+-->
+<div class="container-fluid">
+    <!-- 1:1 aspect ratio -->
+    <div class="embed-responsive embed-responsive-1by1">
+        <iframe class="embed-responsive-item" src="http://90.0.2.174:8010/"></iframe>
     </div>
 </div>
 {% endblock %}
