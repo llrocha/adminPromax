@@ -140,7 +140,7 @@ def show_tree(request, geo = ''):
     )
 
 
-def visualizacao(request, geo, dir = ''):
+def visualizacao(request, dir = ''):
     icons = {
         '*': ['default.png', '[   ]'],
         '7z': ['archive.png', '[   ]'],
@@ -273,18 +273,18 @@ def visualizacao(request, geo, dir = ''):
     
     assert isinstance(request, HttpRequest)
 
+    context = BaseView(request).context()
+    geografia = context['geo']
+    server = context['server']
+    port = int(context['port'])
+
+
     if(len(dir) == 0):
-        dir = '/{0}/'.format(geo)
+        dir = '/{0}'.format(geografia)
 
     if(dir.find('->') > 0):
         dir = dir.split()[0]
 
-    context = BaseView(request).context()
-    geografia = context['geo']
-    if(len(geo) > 0):
-        geografia = geo.strip('/')
-    server = context['server']
-    port = int(context['port'])
 
     command = 'EnvironControls->list_dir->{0}->{1}'.format(geografia, dir)
     result = ExecuteRemoteCommand(server, port, command)

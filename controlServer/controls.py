@@ -251,8 +251,8 @@ class EnvironControls(BaseControls):
         return os.popen(command).read()
 
     def list_dir(self, dir = ''):
-        if(len(dir) == 0):
-            dir = '/{0}/'.format(self.geo)
+        dir = dir.strip('/')
+        dir = '/{0}/'.format(dir)
 
         if(os.path.isdir(dir)):
             try:
@@ -265,8 +265,8 @@ class EnvironControls(BaseControls):
 
         return result
 
-    def build_promax(self, path = ''):
-        command = '{0}/criar_geo.sh {1} {0} 2>&1'.format(path, self.geo)
+    def build_promax(self, path = 'buildenv'):
+        command = 'cd {0};./criar_geo.sh {1} {0} 2>&1'.format(path, self.geo)
         return os.popen(command).read()
 
 class JobsControls(BaseControls):
