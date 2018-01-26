@@ -93,6 +93,15 @@ class ApacheControls(BaseControls):
 class DataBaseControls(BaseControls):
     def __init__(self, geo = ''):
         super(self.__class__, self).__init__(geo)
+
+    def list_available_dat(self):
+        result = os.popen('ls -d /dev/mapper/vgpromax_??-dat').read()
+        if (len(result) == 0):
+           result = 'Sem bases disponíveis.'
+           return result
+        
+        return result
+
     
 
 class BuildBotControls(BaseControls):

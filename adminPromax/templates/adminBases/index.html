@@ -1,5 +1,12 @@
 {% extends "base.html" %}
 {% block content %}
 <div class="container">
+{% block inner_content %}{% endblock %}    
 </div>
+
+<pre>
+    {% for k, v in request.META.items %}
+    {{k}}={{v}}
+    {% endfor %}
+</pre>
 {% endblock %}
