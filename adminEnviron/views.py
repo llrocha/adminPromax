@@ -7,6 +7,7 @@ from django.http import HttpRequest, HttpResponse
 from adminClasses.adminClasses import BaseView
 
 from controlServer.controlclient import ExecuteRemoteCommand
+
 import urllib.request
 import re
 import os
@@ -53,14 +54,19 @@ def monitoramento(request):
     )
 
 
-def instancias(request):
+def instancias(request, geo = ''):
     """Renders the 'instancias' page."""
     assert isinstance(request, HttpRequest)
 
-    instancias = ExecuteRemoteCommand('90.0.2.174', 9999, 'ApacheControls->instances->h1')
+    context = BaseView(request).context()
+
+    geo = context['geo']
+    server = context['server']
+    port = int(context['port'])
+
+    instancias = ExecuteRemoteCommand(server, port, 'ApacheControls->instances->h1')
     instancias = instancias.split(';')
 
-    context = BaseView(request).context()
     context.update({
             'menu':'adminEnviron/instancias',
             'appname':'adminPromax',
@@ -309,6 +315,10 @@ def visualizacao(request, dir = ''):
 
                 d['file'] = ' '.join(l[8:])
                 d['permissions'] = l[0]
+                if(d['permissions'][0] == 'd'):
+                    d['dir'] = True
+                else:
+                    d['dir'] = False
                 d['user'] = l[2]
                 d['group'] = l[3]
                 d['size'] = l[4]
@@ -337,6 +347,8 @@ def visualizacao(request, dir = ''):
 
 
 def build_promax(request, geo, dir = ''):
+    assert isinstance(request, HttpRequest)
+
     context = BaseView(request).context()
     geografia = context['geo']
     if(len(geo) > 0):

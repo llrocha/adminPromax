@@ -35,8 +35,13 @@
                 </tr>
                 {% for file in webdav %}
                 <tr class="{% cycle 'even' 'odd' %}">
+                    {% if file.dir %}
                     <td class="indexcolicon"><a href="{{file.file}}"><img src='{% static "pathview/icons/"%}{{file.icon}}' alt="{{file.alt}}" /></a></td>
                     <td class="indexcolname"><a href="{{file.file}}">{{file.file}}</a></td>
+                    {% else %}
+                    <td class="indexcolicon"><img src='{% static "pathview/icons/"%}{{file.icon}}' alt="{{file.alt}}" /></td>
+                    <td class="indexcolname">{{file.file}}</td>
+                    {% endif %}
                     <td class="indexcolpermissions">{{file.permissions}}</td>
                     <td class="indexcoluser">{{file.user}}</td>
                     <td class="indexcolgroup">{{file.group}}</td>
