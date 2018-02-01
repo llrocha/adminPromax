@@ -102,6 +102,18 @@ class DataBaseControls(BaseControls):
         
         return result
 
+
+    def mount_dat(self, fs = ''):
+        umount = 'umount /{0}/promax/dat >/dev/null 2>&1'.format(self.geo) 
+        mount = 'mount {0} /{1}/promax/dat >/dev/null 2>&1'.format(fs, self.geo)
+        os.popen(umount).read()
+        result = os.popen(mount).read()
+        if (len(result) == 0):
+           result = 'File system montado com sucesso.'
+           return result
+        
+        return result
+
     
 
 class BuildBotControls(BaseControls):
@@ -233,9 +245,10 @@ class BuildBotControls(BaseControls):
     def list_branches(self):
         dir = '/buildbot/gitpoller-workdir/2A/'
         os.chdir(dir)
-        result = str(sh.git('branch', '-r'))
-        result = str(sh.git('branch', '-r'))
-        return result.replace('\n', ';').replace(' ', '')
+        command = 'git branch -r'
+        result = os.popen(command).read()
+        result = result.replace('\n', ';').replace(' ', '')
+        return result.strip(';')
 
 
 class EnvironControls(BaseControls):

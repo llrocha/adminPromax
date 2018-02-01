@@ -1,19 +1,21 @@
 {% extends "adminBases/index.html" %}
 {% block inner_content %}
-<form action="selecionar/" method="post">
+<form action="{{request.path}}selecionar/" method="post">
     {% csrf_token %}
     {% for dat in available_dat %}
-
     <div class="form-check">
+        {% ifequal dat request.POST.dat %}
+        <input class="form-check-input" type="radio" name="dat" id="{{ dat }}" value="{{ dat }}" checked>
+        {% else %}
         <input class="form-check-input" type="radio" name="dat" id="{{ dat }}" value="{{ dat }}">
-        <label class="form-check-label" for="dat Radios">
-        {{ dat }}
-        </label>
+        {% endifequal %}
+        <label class="form-check-label" for="dat Radios">{{ dat }}</label>
     </div>
     {% endfor %}
 <br>
     <div class="row">
         <button type="submit" class="btn btn-outline-secondary">Selecionar</button>
     </div>
+    {{HTTP_REFERER}}
 </form>
 {% endblock %}

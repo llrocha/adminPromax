@@ -55,3 +55,33 @@ def disponivel(request):
         'adminBases/disponivel.html',
         context
     )
+
+
+def selecionar(request):
+    """Renders the 'index' page."""
+    assert isinstance(request, HttpRequest)
+
+    context = BaseView(request).context()
+    geo = context['geo']
+    server = context['server']
+    port = int(context['port'])
+
+    if('dat' in request.POST.keys()):
+        selected = ExecuteRemoteCommand(server, port, 'DataBaseControls->mount_dat->' + geo + '->' + request.POST['dat'])
+    else:
+        selected = 'O sistema de arquivos selecionado não foi montado.'
+
+    context.update({
+            'menu':'adminBases',
+            'appname':'adminPromax',
+            'title':'adminBases/Disponivel',
+            'year':datetime.now().year,
+            'request':request,
+            'selected': selected,
+        })
+
+    return render(
+        request,
+        'adminBases/selecionado.html',
+        context
+    )
