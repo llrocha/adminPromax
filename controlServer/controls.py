@@ -313,6 +313,8 @@ class ServerControls():
 
         self.geos = glob.glob('/[a-z][a-z0-9]/')
         self.geos = [ x.strip('/') for x in self.geos ]
+        if(len(self.geos) == 0):
+            self.geos = ['h1']
         
         self.classes = [
             'BaseControls',
