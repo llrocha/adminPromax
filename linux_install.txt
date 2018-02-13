@@ -13,16 +13,18 @@ subscription-manager subscribe
 2) Segundo passo:
 
 yum install net-tools -y
+yum install vim-enhanced.x86_64 -y
 yum install httpd.x86_64 httpd-manual.noarch httpd-tools.x86_64 -y
+yum install yum-utils.noarch -y
+yum install ksh.x86_64 -y
+yum install expect.x86_64 dos2unix.x86_64 -y
+
 yum install git.x86_64 -y
 yum install zip.x86_64 unzip.x86_64 -y
-yum install vim-enhanced.x86_64 -y
 yum install glibc.x86_64 -y
 yum install glibc.i686 nspr -y
-yum install yum-utils.noarch -y
+
 #yum install nmon -y
-yum install ksh -y
-yum install expect.x86_64 dos2unix.x86_64 -y
 
 
 3) Terceiro passo
@@ -35,7 +37,7 @@ yum install expect.x86_64 dos2unix.x86_64 -y
 yum-config-manager --enable rhel-server-rhscl-7-rpms
 
 # 2. Install the collection:
-yum install rh-python35
+yum install rh-python36 -y
 
 # 3. Start using software collections:
 scl enable rh-python35 bash
