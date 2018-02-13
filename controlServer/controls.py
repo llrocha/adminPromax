@@ -2,6 +2,7 @@ import os
 import re
 import sh
 import glob
+import pathlib
 import subprocess
 from buildbot.config import GitInfo, BuildBotInfo
 
@@ -113,6 +114,27 @@ class DataBaseControls(BaseControls):
            return result
         
         return result
+
+    def create_vgs(self):
+        geos_file = '/root/geos'
+        fp = open(geos_file, 'r')
+        geos = fp.readlines()
+        fp.close()
+        result = []
+        for geo in geos:
+            path = '/dev/mapper/vgpromax_{0}-dat'.format(*geo)
+            if (not pathlib.Path(path).is_dir()):
+                geo = geo.split()
+                pvcreate = 'pvcreate /dev/sd{1}'.format(*geo)
+                result.append(os.popen(pvcreate).read())
+                vgcreate = 'vgcreate vgpromax_{0} /dev/sd{1}'.format(*geo)
+                result.append(os.popen(vgcreate).read())
+                lvcreate = 'lvcreate -L 999.9GB -n dat vgpromax_{0}'.format(*geo)
+                result.append(os.popen(lvcreate).read())
+                mkfs = 'mkfs.xfs /dev/mapper/vgpromax_{0}-dat'.format(*geo)
+                result.append(os.popen(mkfs).read())
+
+        return '\n'.join(result)
 
     
 
