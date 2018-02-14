@@ -45,7 +45,7 @@ $MinMemory      = 1GB
 $MaxMemory      = 4GB
 
 # Sysprep VHD path (The VHD will be copied to the VM folder)
-$SysVHDPath     = "\\hb-vw16fseguro\instalador$\vm\promax.01.01.01\promax_rhel_7.vhdx"
+$SysVHDPath     = "\\hb-vw16fseguro\instalador$\vm\promax_01.01.01\promax_rhel_7.vhdx"
 # Rename the VHD copied in VM folder to:
 $OsDiskName     = $VMName
 
@@ -299,3 +299,15 @@ Foreach ($NetAdapter in $NICs){
 
     $i++
 }
+
+$count = 10
+#Inicia a VM
+while($count -gt 0) {
+    $log_message = $count + " segundos para iniciar a VM..."
+    Write-Host($log_message)
+    Start-Sleep -s 1
+    $count--
+}
+$log_message = "Iniciando a VM..."
+Write-Host($log_message)
+Start-VM -Name $VMName
