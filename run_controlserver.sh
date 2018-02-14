@@ -16,4 +16,6 @@ cd controlServer
 
 #./start.sh
 export PYTHONPATH=/root/adminPromax
+
+echo "Running Control Server:"
 python controlserver.py
