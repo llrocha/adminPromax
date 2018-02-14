@@ -124,15 +124,34 @@ class DataBaseControls(BaseControls):
         for geo in geos:
             geo = geo.split()
             path = '/dev/mapper/vgpromax_{0}-dat'.format(*geo)
-            if (not pathlib.Path(path).is_dir()):
+            #print('Is dir: {0} ? {1}'.format(path, pathlib.Path(path).exists()))
+            if (not pathlib.Path(path).exists()):
+                result.append('='*80)
                 pvcreate = 'pvcreate /dev/sd{1}'.format(*geo)
+                #print('Executing: {0}'.format(pvcreate))
                 result.append(os.popen(pvcreate).read())
                 vgcreate = 'vgcreate vgpromax_{0} /dev/sd{1}'.format(*geo)
+                #print('Executing: {0}'.format(vgcreate))
                 result.append(os.popen(vgcreate).read())
-                lvcreate = 'lvcreate -L 999.9GB -n dat vgpromax_{0}'.format(*geo)
+                lvcreate = 'yes|lvcreate -W y -L 1022GB -n dat vgpromax_{0}'.format(*geo)
+                #print('Executing: {0}'.format(lvcreate))
                 result.append(os.popen(lvcreate).read())
                 mkfs = 'mkfs.xfs /dev/mapper/vgpromax_{0}-dat'.format(*geo)
+                #print('Executing: {0}'.format(mkfs))
                 result.append(os.popen(mkfs).read())
+            else:
+                result.append('O caminho {0}, já existe.'.format(path))
+
+        result.append('='*80)
+        command = 'pvs'
+        result.append(os.popen(command).read())
+        result.append('='*80)
+        command = 'vgs'
+        result.append(os.popen(command).read())
+        result.append('='*80)
+        command = 'lvs'
+        result.append(os.popen(command).read())
+        result.append('='*80)
 
         return '\n'.join(result)
 
