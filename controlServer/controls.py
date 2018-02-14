@@ -122,9 +122,9 @@ class DataBaseControls(BaseControls):
         fp.close()
         result = []
         for geo in geos:
+            geo = geo.split()
             path = '/dev/mapper/vgpromax_{0}-dat'.format(*geo)
             if (not pathlib.Path(path).is_dir()):
-                geo = geo.split()
                 pvcreate = 'pvcreate /dev/sd{1}'.format(*geo)
                 result.append(os.popen(pvcreate).read())
                 vgcreate = 'vgcreate vgpromax_{0} /dev/sd{1}'.format(*geo)
