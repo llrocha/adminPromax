@@ -39,6 +39,9 @@ def disponivel(request):
     port = int(context['port'])
 
     available_dat = ExecuteRemoteCommand(server, port, 'DataBaseControls->list_available_dat->' + geo)
+    if(available_dat == 'Sem bases disponíveis.'):
+        available_dat = ExecuteRemoteCommand(server, port, 'DataBaseControls->create_vgs->' + geo)
+    available_dat = ExecuteRemoteCommand(server, port, 'DataBaseControls->list_available_dat->' + geo)
     available_dat = available_dat.split()
 
     context.update({
