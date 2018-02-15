@@ -24,6 +24,9 @@ yum install zip.x86_64 unzip.x86_64 -y
 yum install glibc.x86_64 -y
 yum install glibc.i686 nspr -y
 
+yum install libuuid-devel -y
+yum install zlib-devel.x86_64 -y
+
 #yum install nmon -y
 
 
@@ -72,3 +75,11 @@ export LD_LIBRARY_PATH=/mfocus64/lib:/lib64:/lib:/opt/rh/rh-python35/root/usr/li
 7) LVM HowTo
 https://www.digitalocean.com/community/tutorials/an-introduction-to-lvm-concepts-terminology-and-operations
 
+8) Netdata Install
+
+git clone https://github.com/firehol/netdata.git --depth=1
+cd netdata
+./netdata-installer.sh --help
+
+Instruções de instalação
+https://github.com/firehol/netdata/wiki/Installation#linux-by-hand
