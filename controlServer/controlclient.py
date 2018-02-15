@@ -66,7 +66,7 @@ def ExecuteRemoteCommand(host, port, command):
 
 
 if __name__ == "__main__":
-    HOST, PORT = "90.0.2.174", 9999
+    HOST, PORT = "192.168.0.100", 9999
     data = " ".join(sys.argv[1:])
 
     print(ExecuteRemoteCommand(HOST, PORT, data))
