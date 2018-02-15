@@ -29,7 +29,7 @@ class ApacheControls(BaseControls):
         r = ''
         command = 'ps -ef'
         ps = os.popen(command).read()
-        for item in ps:
+        for item in ps.split('\n'):
             if(re.search('httpd', item)):
                 r += (item + '\n')
         if(len(r) == 0):
