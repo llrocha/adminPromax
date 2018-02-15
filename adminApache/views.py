@@ -43,15 +43,16 @@ def configuracao(request, file = ''):
     assert isinstance(request, HttpRequest)
 
     context = BaseView(request).context()
-
     geo = context['geo']
     server = context['server']
+    port = int(context['port'])
 
-    config_files = ExecuteRemoteCommand(server, 9999, 'ApacheControls->config_files->' + geo)
+    config_files = ExecuteRemoteCommand(server, port, 'ApacheControls->config_files->' + geo)
     config_files = config_files.split(';')
     config_files.reverse()
+
     if(file):
-        file_content = ExecuteRemoteCommand(server, 9999, 'ApacheControls->configfile_content->' + geo + '->' + file)
+        file_content = ExecuteRemoteCommand(server, port, 'ApacheControls->configfile_content->' + geo + '->' + file)
         file_content = highlight(file_content, ApacheConfLexer(), HtmlFormatter())
         file_css = HtmlFormatter().get_style_defs('.highlight')
     else:
@@ -82,15 +83,16 @@ def logs(request, file = ''):
     assert isinstance(request, HttpRequest)
 
     context = BaseView(request).context()
-
     geo = context['geo']
     server = context['server']
+    port = int(context['port'])
 
-    config_files = ExecuteRemoteCommand(server, 9999, 'ApacheControls->log_files->' + geo)
+    config_files = ExecuteRemoteCommand(server, port, 'ApacheControls->log_files->' + geo)
     config_files = config_files.split(';')
     config_files.reverse()
+
     if(file):
-        file_content = ExecuteRemoteCommand(server, 9999, 'ApacheControls->logfile_content->' + geo + '->' + file)
+        file_content = ExecuteRemoteCommand(server, port, 'ApacheControls->logfile_content->' + geo + '->' + file)
         #file_content = highlight(file_content, ApacheConfLexer(), HtmlFormatter())
         #file_css = HtmlFormatter().get_style_defs('.highlight')
     else:
@@ -120,12 +122,12 @@ def controle(request, command = ''):
     assert isinstance(request, HttpRequest)
 
     context = BaseView(request).context()
-
     geo = context['geo']
     server = context['server']
+    port = int(context['port'])
 
     if(command):
-        config_files = ExecuteRemoteCommand(server, 9999, 'ApacheControls->' + command + '->' + geo)
+        config_files = ExecuteRemoteCommand(server, port, 'ApacheControls->' + command + '->' + geo)
     
     context.update({
             'menu':'adminApache/controle',
@@ -148,11 +150,11 @@ def status(request):
     assert isinstance(request, HttpRequest)
 
     context = BaseView(request).context()
-
     geo = context['geo']
     server = context['server']
+    port = int(context['port'])
 
-    status = ExecuteRemoteCommand(server, 9999, 'ApacheControls->status->' + geo)
+    status = ExecuteRemoteCommand(server, port, 'ApacheControls->status->' + geo)
 
     context.update({
             'menu':'adminApache/status',

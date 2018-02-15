@@ -13,11 +13,11 @@ def index(request):
     assert isinstance(request, HttpRequest)
 
     context = BaseView(request).context()
-
     geo = context['geo']
     server = context['server']
+    port = int(context['port'])
 
-    instancias = ExecuteRemoteCommand(server, 9999, 'BaseControls->instances->' + geo)
+    instancias = ExecuteRemoteCommand(server, port, 'BaseControls->instances->' + geo)
     instancias = instancias.split(';')
     
     context.update({

@@ -12,6 +12,10 @@ def index(request):
     assert isinstance(request, HttpRequest)
 
     context = BaseView(request).context()
+    geo = context['geo']
+    server = context['server']
+    port = int(context['port'])
+
     context.update({
             'menu':'adminJobs',
             'appname':'adminPromax',

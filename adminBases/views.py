@@ -33,7 +33,6 @@ def disponivel(request):
     assert isinstance(request, HttpRequest)
 
     context = BaseView(request).context()
-
     geo = context['geo']
     server = context['server']
     port = int(context['port'])

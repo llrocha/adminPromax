@@ -59,12 +59,11 @@ def instancias(request, geo = ''):
     assert isinstance(request, HttpRequest)
 
     context = BaseView(request).context()
-
     geo = context['geo']
     server = context['server']
     port = int(context['port'])
 
-    instancias = ExecuteRemoteCommand(server, port, 'ApacheControls->instances->h1')
+    instancias = ExecuteRemoteCommand(server, port, 'ApacheControls->instances->' + geo)
     instancias = instancias.split(';')
 
     context.update({

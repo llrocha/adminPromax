@@ -13,7 +13,12 @@ def index(request):
     """Renders the 'index' page."""
     assert isinstance(request, HttpRequest)
 
-    branches = ExecuteRemoteCommand('90.0.2.174', 9999, 'BuildBotControls->list_branches')
+    context = BaseView(request).context()
+    geo = context['geo']
+    server = context['server']
+    port = int(context['port'])
+
+    branches = ExecuteRemoteCommand(server, port, 'BuildBotControls->list_branches->' + geo)
     branches = branches.split(';')
 
     context = BaseView(request).context()
