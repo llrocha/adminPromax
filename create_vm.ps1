@@ -6,7 +6,7 @@
 #powershell -Command "Set-ExecutionPolicy -ExecutionPolicy Unrestricted"
 
 # VM Name
-$VMName          = "promax_" + $env:USERNAME
+$VMName          = "promax_cdd" #+ "_" + $env:USERNAME.ToUpper()
 
 #GEOGRAFIAS
 $GEOS            = @("ba", "co", "mg", "no", "pr", "rj", "sp", "su")
@@ -17,15 +17,14 @@ $AutoStartAction = 1
 $AutoStartDelay  = 10
 # Automatic Start Action (TurnOff = 0, Save =1, Shutdown = 2)
 $AutoStopAction  = 1
-$log_message = "Nome do servidor: ", $VMName
-Write-Host($log_message)
+
+Write-Host("Nome do servidor: " + $VMName)
 
 ###### Hardware Configuration ######
 # VM Path
-$VMPath         = "C:\vm\promax"
+$VMPath         = "C:\vm\promax\" + $VMName
 
-$log_message = "Criando em      : " + $VMPath
-Write-Host($log_message)
+Write-Host("Criando em      : " + $VMPath)
 
 # VM Generation (1 or 2)
 $Gen            = 2
@@ -34,7 +33,7 @@ $Gen            = 2
 $ProcessorCount = 1
 
 ## Memory (Static = 0 or Dynamic = 1)
-$Memory         = 1
+$MemoryType     = 1
 
 # StaticMemory
 $StaticMemory   = 2GB
@@ -71,7 +70,7 @@ $ExtraDrive  = @()
 ForEach ($geo in $GEOS) {
     $Drive       = New-Object System.Object
     $Drive       | Add-Member -MemberType NoteProperty -Name Name -Value $("promax_base_" + $geo)
-    $Drive       | Add-Member -MemberType NoteProperty -Name Path -Value $($VMPath + "/" + $VMName)
+    $Drive       | Add-Member -MemberType NoteProperty -Name Path -Value $VMPath
     $Drive       | Add-Member -MemberType NoteProperty -Name Size -Value 1TB
     $Drive       | Add-Member -MemberType NoteProperty -Name Type -Value Dynamic
     $ExtraDrive += $Drive
@@ -81,10 +80,11 @@ ForEach ($geo in $GEOS) {
 
 ### Network Adapters
 # Primary Network interface: VMSwitch 
-$VMSwitchName = "vSwitchExternal"
+$VMSwitchExternal = "vmSwitchExternal"
+$VMSwitchInternal = "vmSwitchInternal"
 $VlanId       = 0
 $VMQ          = $False
-$IPSecOffload = $False
+$IPSecOffload = $True
 $SRIOV        = $False
 $MacSpoofing  = $False
 $DHCPGuard    = $False
@@ -92,22 +92,32 @@ $RouterGuard  = $False
 $NicTeaming   = $False
 
 #Search Switch
-$VMSwitchExist = $false
+$VMSwitchExternalExist = $false
+$VMSwitchInternalExist = $false
 $Switchs = Get-VMSwitch
 foreach ($switch in $Switchs) {
-    if($switch.Name -eq $VMSwitchName) {
-        $VMSwitchExist = $true
+    if($switch.Name -eq $VMSwitchExternal) {
+        $VMSwitchExternalExist = $true
+    }
+    if($switch.Name -eq $VMSwitchInternal) {
+        $VMSwitchInternalExist = $true
     }
 }
 # Create Virtual Switch
-#$VMSwitch = Get-VMSwitch -Name $VMSwitchName
-if(!$VMSwitchExist) {
+#$VMSwitch = Get-VMSwitch -Name $VMSwitchExternal
+if(!$VMSwitchExternalExist) {
     New-VMSwitch -NetAdapterName "Ethernet" `
-                 -Name $VMSwitchName `
+                 -Name $VMSwitchExternal `
                  -AllowManagementOS $true
 
-    $log_message = "Switch Virtual  : " + $VMSwitchName    
-    Write-Host($log_message)
+    Write-Host("Switch Virtual  : " + $VMSwitchExternal)
+}
+
+if(!$VMSwitchInternalExist) {
+    New-VMSwitch -SwitchType Internal `
+                 -Name $VMSwitchInternal `
+
+    Write-Host("Switch Virtual  : " + $VMSwitchInternal)
 }
 
 ## Additional NICs
@@ -115,20 +125,21 @@ $NICs  = @()
 
 # NIC 1
 $NIC   = New-Object System.Object
-$NIC   | Add-Member -MemberType NoteProperty -Name VMSwitch -Value $VMSwitchName
+$NIC   | Add-Member -MemberType NoteProperty -Name VMSwitch -Value $VMSwitchExternal
 $NIC   | Add-Member -MemberType NoteProperty -Name VLAN -Value 10
 $NIC   | Add-Member -MemberType NoteProperty -Name VMQ -Value $VMQ
-$NIC   | Add-Member -MemberType NoteProperty -Name IPsecOffload -Value $True
-$NIC   | Add-Member -MemberType NoteProperty -Name SRIOV -Value $False
-$NIC   | Add-Member -MemberType NoteProperty -Name MacSpoofing -Value $False
-$NIC   | Add-Member -MemberType NoteProperty -Name DHCPGuard -Value $False
-$NIC   | Add-Member -MemberType NoteProperty -Name RouterGuard -Value $False
-$NIC   | Add-Member -MemberType NoteProperty -Name NICTeaming -Value $False
+$NIC   | Add-Member -MemberType NoteProperty -Name IPsecOffload -Value $IPSecOffload
+$NIC   | Add-Member -MemberType NoteProperty -Name SRIOV -Value $SRIOV
+$NIC   | Add-Member -MemberType NoteProperty -Name MacSpoofing -Value $MacSpoofing
+$NIC   | Add-Member -MemberType NoteProperty -Name DHCPGuard -Value $DHCPGuard
+$NIC   | Add-Member -MemberType NoteProperty -Name RouterGuard -Value $RouterGuard
+$NIC   | Add-Member -MemberType NoteProperty -Name NICTeaming -Value $NicTeaming
 $NICs += $NIC
 
-#NIC 2
+Exit
+## NIC 2
 #$NIC   = New-Object System.Object
-#$NIC   | Add-Member -MemberType NoteProperty -Name VMSwitch -Value $VMSwitchName
+#$NIC   | Add-Member -MemberType NoteProperty -Name VMSwitch -Value $VMSwitchExternal
 #$NIC   | Add-Member -MemberType NoteProperty -Name VLAN -Value 20
 #$NIC   | Add-Member -MemberType NoteProperty -Name VMQ -Value $False
 #$NIC   | Add-Member -MemberType NoteProperty -Name IPsecOffload -Value $True
@@ -151,25 +162,32 @@ New-VM -Name $VMName `
        -Path $VMPath `
        -NoVHD `
        -Generation $Gen `
-       -MemoryStartupBytes 1GB `
-       -SwitchName $VMSwitchName
+       -MemoryStartupBytes $MinMemory `
+       -SwitchName $VMSwitchExternal
 
 #For booting Linux
 Set-VMFirmware $VMName -EnableSecureBoot Off
 
 
-if ($AutoStartAction -eq 0){$StartAction = "Nothing"}
-Elseif ($AutoStartAction -eq 1){$StartAction = "Start"}
-Else{$StartAction = "StartIfRunning"}
+if ($AutoStartAction -eq 0) {
+    $StartAction = "Nothing"
+} elseif ($AutoStartAction -eq 1) {
+    $StartAction = "Start"
+} else {
+    $StartAction = "StartIfRunning"
+}
 
-if ($AutoStopAction -eq 0){$StopAction = "TurnOff"}
-Elseif ($AutoStopAction -eq 1){$StopAction = "Save"}
-Else{$StopAction = "Shutdown"}
+if ($AutoStopAction -eq 0) {
+    $StopAction = "TurnOff"
+} elseif ($AutoStopAction -eq 1) {
+    $StopAction = "Save"
+} else {
+    $StopAction = "Shutdown"
+}
 
 ## Changing the number of processor and the memory
-# If Static Memory
-if (!$Memory){
-    
+if (!$MemoryType){
+    # If Static Memory    
     Set-VM -Name $VMName `
            -ProcessorCount $ProcessorCount `
            -StaticMemory `
@@ -177,9 +195,8 @@ if (!$Memory){
            -AutomaticStartAction $StartAction `
            -AutomaticStartDelay $AutoStartDelay `
            -AutomaticStopAction $StopAction
-}
-# If Dynamic Memory
-Else{
+} else {
+    # If Dynamic Memory
     Set-VM -Name $VMName `
            -ProcessorCount $ProcessorCount `
            -DynamicMemory `
@@ -197,40 +214,38 @@ if ($VlanId -gt 0){$PrimaryNetAdapter | Set-VMNetworkAdapterVLAN -Access -VlanId
 else{$PrimaryNetAdapter | Set-VMNetworkAdapterVLAN -untagged}
 
 if ($VMQ){$PrimaryNetAdapter | Set-VMNetworkAdapter -VmqWeight 100}
-Else {$PrimaryNetAdapter | Set-VMNetworkAdapter -VmqWeight 0}
+else {$PrimaryNetAdapter | Set-VMNetworkAdapter -VmqWeight 0}
 
 if ($IPSecOffload){$PrimaryNetAdapter | Set-VMNetworkAdapter -IPsecOffloadMaximumSecurityAssociation 512}
-Else {$PrimaryNetAdapter | Set-VMNetworkAdapter -IPsecOffloadMaximumSecurityAssociation 0}
+else {$PrimaryNetAdapter | Set-VMNetworkAdapter -IPsecOffloadMaximumSecurityAssociation 0}
 
 if ($SRIOV){$PrimaryNetAdapter | Set-VMNetworkAdapter -IovQueuePairsRequested 1 -IovInterruptModeration Default -IovWeight 100}
-Else{$PrimaryNetAdapter | Set-VMNetworkAdapter -IovWeight 0}
+else{$PrimaryNetAdapter | Set-VMNetworkAdapter -IovWeight 0}
 
 if ($MacSpoofing){$PrimaryNetAdapter | Set-VMNetworkAdapter -MacAddressSpoofing on}
-Else {$PrimaryNetAdapter | Set-VMNetworkAdapter -MacAddressSpoofing off}
+else {$PrimaryNetAdapter | Set-VMNetworkAdapter -MacAddressSpoofing off}
 
 if ($DHCPGuard){$PrimaryNetAdapter | Set-VMNetworkAdapter -DHCPGuard on}
-Else {$PrimaryNetAdapter | Set-VMNetworkAdapter -DHCPGuard off}
+else {$PrimaryNetAdapter | Set-VMNetworkAdapter -DHCPGuard off}
 
 if ($RouterGuard){$PrimaryNetAdapter | Set-VMNetworkAdapter -RouterGuard on}
-Else {$PrimaryNetAdapter | Set-VMNetworkAdapter -RouterGuard off}
+else {$PrimaryNetAdapter | Set-VMNetworkAdapter -RouterGuard off}
 
 if ($NicTeaming){$PrimaryNetAdapter | Set-VMNetworkAdapter -AllowTeaming on}
-Else {$PrimaryNetAdapter | Set-VMNetworkAdapter -AllowTeaming off}
+else {$PrimaryNetAdapter | Set-VMNetworkAdapter -AllowTeaming off}
 
 
 ## VHD(X) OS disk copy
 $log_message = "Copiando VHDX   : " + $SysVHDPath
 Write-Host($log_message)
 while(!$(Test-Path $SysVHDPath)) {
-    $log_message = "Verificando VHDX: Indisponível"
-    Write-Host($log_message)
+    Write-Host("Verificando VHDX: Indisponível")
     Start-Sleep -s 1
 }
 $OsDiskInfo = Get-Item $SysVHDPath
 Copy-Item -Path $SysVHDPath -Destination $($VMPath + "\" + $VMName)
 Rename-Item -Path $($VMPath + "\" + $VMName + "\" + $OsDiskInfo.Name) -NewName $($OsDiskName + $OsDiskInfo.Extension)
-$log_message = "VHDX copiado    : " + $SysVHDPath
-Write-Host($log_message)
+Write-Host("VHDX copiado    : " + $SysVHDPath)
 
 # Attach the VHD(x) to the VM
 Add-VMHardDiskDrive -VMName $VMName -Path $($VMPath + "\" + $VMName + "\" + $OsDiskName + $OsDiskInfo.Extension)
@@ -250,7 +265,7 @@ Foreach ($Disk in $ExtraDrive){
         Write-Host("VHDX criado     : " + $Disk.Name + ".vhdx")
     }
     # if it is fixed
-    Elseif ($Disk.Type -like "Fixed"){
+    elseif ($Disk.Type -like "Fixed"){
         New-VHD -Path $($Disk.Path + "\" + $Disk.Name + ".vhdx") `
                 -SizeBytes $Disk.Size `
                 -Fixed
@@ -274,25 +289,25 @@ Foreach ($NetAdapter in $NICs){
     else{$ExtraNic | Set-VMNetworkAdapterVLAN -untagged}
 
     if ($NetAdapter.VMQ){$ExtraNic | Set-VMNetworkAdapter -VmqWeight 100}
-    Else {$ExtraNic | Set-VMNetworkAdapter -VmqWeight 0}
+    else {$ExtraNic | Set-VMNetworkAdapter -VmqWeight 0}
 
     if ($NetAdapter.IPSecOffload){$ExtraNic | Set-VMNetworkAdapter -IPsecOffloadMaximumSecurityAssociation 512}
-    Else {$ExtraNic | Set-VMNetworkAdapter -IPsecOffloadMaximumSecurityAssociation 0}
+    else {$ExtraNic | Set-VMNetworkAdapter -IPsecOffloadMaximumSecurityAssociation 0}
 
     if ($NetAdapter.SRIOV){$ExtraNic | Set-VMNetworkAdapter -IovQueuePairsRequested 1 -IovInterruptModeration Default -IovWeight 100}
-    Else{$ExtraNic | Set-VMNetworkAdapter -IovWeight 0}
+    else{$ExtraNic | Set-VMNetworkAdapter -IovWeight 0}
 
     if ($NetAdapter.MacSpoofing){$ExtraNic | Set-VMNetworkAdapter -MacAddressSpoofing on}
-    Else {$ExtraNic | Set-VMNetworkAdapter -MacAddressSpoofing off}
+    else {$ExtraNic | Set-VMNetworkAdapter -MacAddressSpoofing off}
 
     if ($NetAdapter.DHCPGuard){$ExtraNic | Set-VMNetworkAdapter -DHCPGuard on}
-    Else {$ExtraNic | Set-VMNetworkAdapter -DHCPGuard off}
+    else {$ExtraNic | Set-VMNetworkAdapter -DHCPGuard off}
 
     if ($NetAdapter.RouterGuard){$ExtraNic | Set-VMNetworkAdapter -RouterGuard on}
-    Else {$ExtraNic | Set-VMNetworkAdapter -RouterGuard off}
+    else {$ExtraNic | Set-VMNetworkAdapter -RouterGuard off}
 
     if ($NetAdapter.NicTeaming){$ExtraNic | Set-VMNetworkAdapter -AllowTeaming on}
-    Else {$ExtraNic | Set-VMNetworkAdapter -AllowTeaming off}
+    else {$ExtraNic | Set-VMNetworkAdapter -AllowTeaming off}
 
     $log_message = "Placa de Rede   : " + $ExtraNic.Name
     Write-Host($log_message)
@@ -303,7 +318,7 @@ Foreach ($NetAdapter in $NICs){
 $count = 10
 #Inicia a VM
 while($count -gt 0) {
-    $log_message = $count + " segundos para iniciar a VM..."
+    $log_message = $count.ToString() + " segundos para iniciar a VM..."
     Write-Host($log_message)
     Start-Sleep -s 1
     $count--
